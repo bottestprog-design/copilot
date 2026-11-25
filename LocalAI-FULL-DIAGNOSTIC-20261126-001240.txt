@@ -1,0 +1,635 @@
+﻿LOCAL AI - FULL PROJECT DIAGNOSTIC v1.4
+This diagnostic is read-only. Reports are written to the resolved Windows Desktop folder (or fallback folder).
+READ-ONLY / PowerShell 5.1 compatible / no downloads / no existing-service restarts or stops / no deletions / no configuration changes
+The diagnostic launches bounded version/package probes; only a probe process created by this diagnostic may be ended if it exceeds its timeout.
+Generated: 2026-11-26 00:12:40 +04:00
+Privacy: API keys, passwords, webui_secret_key.txt, databases, browser cookies, and full process command lines are NOT collected.
+Network checks only resolve DNS and attempt TCP handshakes to standard service hosts; no credentials or project data are sent.
+Open WebUI liveness (/health), database health (/health/db), and readiness (/ready) are checked separately.
+
+==============================================================================
+1. WINDOWS AND HARDWARE
+==============================================================================
+OS: Microsoft Windows 11 Pro | 10.0.26300 | Build 26300 | 64-bit
+Last boot: 11/23/2026 11:55:52
+CPU: 11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz | cores=4 | threads=8 | maxMHz=1805 | currentLoadPercent=11
+RAM: 15.74 GB
+GPU: Intel(R) Iris(R) Xe Graphics | reportedVRAMBytes=2147479552 | driver=32.0.101.7088 | date=06/17/2026 04:00:00
+SOUND DEVICE: Intel® Smart Sound Technology for USB Audio | status=OK | manufacturer=Intel(R) Corporation
+SOUND DEVICE: Realtek Audio | status=OK | manufacturer=Realtek
+Available RAM at scan start: 7722 MB; free virtual memory: 17019 MB
+Active power scheme: Power Scheme GUID: 381b4222-f694-41f0-9685-ff5bb260df2e  (Balanced)
+Sleep timeout configuration (powercfg query; values are raw Windows power-setting values):
+  Power Scheme GUID: 381b4222-f694-41f0-9685-ff5bb260df2e  (Balanced)
+    GUID Alias: SCHEME_BALANCED
+    Subgroup GUID: 238c9fa8-0aad-41ed-83f4-97be242c8f20  (Sleep)
+      GUID Alias: SUB_SLEEP
+      Power Setting GUID: 29f6c1db-86da-48c5-9fdb-f2b67b1f44da  (Sleep after)
+        GUID Alias: STANDBYIDLE
+        Minimum Possible Setting: 0x00000000
+        Maximum Possible Setting: 0xffffffff
+        Possible Settings increment: 0x00000001
+        Possible Settings units: Seconds
+      Current AC Power Setting Index: 0x000000b4
+      Current DC Power Setting Index: 0x000000b4
+  
+      Power Setting GUID: 94ac6d29-73ce-41a6-809f-6363ba21b47e  (Allow hybrid sleep)
+        GUID Alias: HYBRIDSLEEP
+        Possible Setting Index: 000
+        Possible Setting Friendly Name: Off
+        Possible Setting Index: 001
+        Possible Setting Friendly Name: On
+      Current AC Power Setting Index: 0x00000001
+      Current DC Power Setting Index: 0x00000001
+  
+      Power Setting GUID: 9d7815a6-7ee4-497e-8888-515a05f02364  (Hibernate after)
+        GUID Alias: HIBERNATEIDLE
+        Minimum Possible Setting: 0x00000000
+        Maximum Possible Setting: 0xffffffff
+        Possible Settings increment: 0x00000001
+        Possi [TRUNCATED]
+BATTERY: DELL 1K2CF1A | status=OK | charge=91% | estimatedRunTime=71582788 minutes
+PHYSICAL DISK: NVMe INTEL SSDPEKNU512GZH | type=SSD | health=Healthy | operational=OK | sizeGB=476.94
+NETWORK ADAPTER: Ethernet | type=Ethernet | status=Down | speedMbps=0
+NETWORK ADAPTER: Local Area Connection* 1 | type=Wireless80211 | status=Down | speedMbps=0
+NETWORK ADAPTER: Local Area Connection* 10 | type=Wireless80211 | status=Down | speedMbps=0
+NETWORK ADAPTER: Wi-Fi | type=Wireless80211 | status=Up | speedMbps=29
+NETWORK ADAPTER: Loopback Pseudo-Interface 1 | type=Loopback | status=Up | speedMbps=1073.7
+Microsoft Defender: Antivirus=True RealTime=True Behavior=True IOAV=True Signature=1.463.468.0 Updated=11/25/2026 17:09:51
+WinGet: C:\Users\USER\AppData\Local\Microsoft\WindowsApps\winget.exe
+System Python: C:\Users\USER\AppData\Local\Programs\Python\Python311\python.exe
+Git: C:\Users\USER\AppData\Local\SITEFORGE_TOOLS\Git\cmd\git.exe
+Node.js: NOT FOUND
+System Python version: Python 3.11.9 
+Relevant installed applications (Windows uninstall registry):
+  Git | version=2.56.1 | publisher=The Git Development Community | location=C:\Users\USER\AppData\Local\SITEFORGE_TOOLS\Git\
+  Ollama version 0.40.18 | version=0.40.18 | publisher=Ollama | location=C:\Users\USER\AppData\Local\Programs\Ollama\
+[WARNING] Hardware / LOW_MEMORY — Detected RAM 15.74 GB
+    الإجراء المقترح: أغلق التطبيقات الثقيلة قبل تحميل النموذج؛ 16GB أو أقل يحدّ من التشغيل المتزامن للنموذج والصوت والمنصة.
+
+==============================================================================
+2. STORAGE AND FREE SPACE
+==============================================================================
+C: Windows-26H2 FS=NTFS total=200.098GB free=102.207GB
+D: Data/Backup FS=NTFS total=275.757GB free=264.118GB
+[PASS] Storage / D_DRIVE_AVAILABLE — D: free 264.118 GB
+
+==============================================================================
+3. RUNNING PROCESSES
+==============================================================================
+PID=19772 PPID=9080 name=ollama.exe role=ollama-serve start=2026-11-25T15:01:58.4265902+04:00 workingSetMB=11.7 path=C:\Users\USER\AppData\Local\Programs\Ollama\ollama.exe
+[INFO] Ollama download / NO_PULL_PROCESS — No ollama pull process is running.
+    الإجراء المقترح: إذا لم يكتمل النموذج، افحص ملفات partial وسجلات الاستعادة.
+
+==============================================================================
+4. OLLAMA INSTALLATION AND LOCAL API
+==============================================================================
+Ollama executable: C:\Users\USER\AppData\Local\Programs\Ollama\ollama.exe
+Version: ollama version is 0.40.18
+Ollama API: OK version=0.40.18
+[PASS] Ollama / LOCAL_API_RESPONDS — API version 0.40.18
+Installed local models:
+  local-qwen35:latest | 6.101 GB | modified=2026-11-25T21:24:15.457856+04:00 | digest=9ead80af40a6
+  qwen3.5:9b-q4_K_M | 6.101 GB | modified=2026-11-25T21:13:21.8548939+04:00 | digest=56671c2ab938
+Loaded models in memory:
+  NONE
+[PASS] Model / LOCAL_ALIAS_EXISTS — local-qwen35 tag exists in Ollama.
+Model metadata for local-qwen35: {"format":"gguf","family":"qwen35","families":["qwen35"],"parameter_size":"9.0B","quantization_level":"Q4_K_M"}
+
+==============================================================================
+5. MODEL STORE, MANIFESTS, BLOBS AND PARTIAL DOWNLOADS
+==============================================================================
+Server-log model store: D:\LocalAI\Models
+User OLLAMA_MODELS: D:\LocalAI\Models
+Machine OLLAMA_MODELS: 
+Current diagnostic-process OLLAMA_MODELS: D:\LocalAI\Models
+Default model store: C:\Users\USER\.ollama\models
+CONFIG OLLAMA_HOST: User=127.0.0.1:11434 | Machine=<unset> | CurrentProcess=127.0.0.1:11434
+CONFIG OLLAMA_KEEP_ALIVE: User=10m | Machine=<unset> | CurrentProcess=10m
+CONFIG OLLAMA_NUM_PARALLEL: User=1 | Machine=<unset> | CurrentProcess=1
+CONFIG OLLAMA_MAX_LOADED_MODELS: User=1 | Machine=<unset> | CurrentProcess=1
+CONFIG OLLAMA_CONTEXT_LENGTH: User=<unset> | Machine=<unset> | CurrentProcess=<unset>
+CONFIG OLLAMA_NOPRUNE: User=<unset> | Machine=<unset> | CurrentProcess=<unset>
+CONFIG OLLAMA_FLASH_ATTENTION: User=<unset> | Machine=<unset> | CurrentProcess=<unset>
+STORE: D:\LocalAI\Models | source=server.log | exists=True | manifests=True | blobs=10 | totalBlobGB=6.101
+  TARGET BLOB: sha256-02d45dc1cf451ba2475ac33b301c2dd8f985abe4c182ce04a1f2f5bf0260278d | 5.243 GB | lastWrite=2026-11-25T21:24:14.6449429+04:00 | ageMin=168.6
+STORE: C:\Users\USER\.ollama\models | source=Ollama default | exists=False | manifests=False | blobs=0 | totalBlobGB=0
+QWEN MANIFEST: 9b-q4_K_M | 1252 bytes | 11/25/2026 21:13:21
+  LAYER application/vnd.ollama.image.projector | digest=sha256:f836f08f921193f4d6b6a6952dba0a6fb116759d26a757bcb395d570d73976ca | expected=921704832 | actual=921704832 | exists=True | partial=0
+  LAYER application/vnd.ollama.image.model | digest=sha256:02d45dc1cf451ba2475ac33b301c2dd8f985abe4c182ce04a1f2f5bf0260278d | expected=5629109120 | actual=5629109120 | exists=True | partial=0
+  LAYER application/vnd.ollama.image.template | digest=sha256:b507b9c2f6ca642bffcd06665ea7c91f235fd32daeefdf875a0f938db05fb315 | expected=13 | actual=13 | exists=True | partial=0
+  LAYER application/vnd.ollama.image.license | digest=sha256:50cbab8a892c5f2993b8c7351a99182507472def3b1374558308605d99b86b32 | expected=11343 | actual=11343 | exists=True | partial=0
+  LAYER application/vnd.ollama.image.params | digest=sha256:9371364b27a52acac9d87f88bd93c9db1174d8d6ec57f6888925cdc1788871ff | expected=65 | actual=65 | exists=True | partial=0
+  LAYER application/vnd.docker.distribution.manifest.v2+json | digest=sha256:56671c2ab9385f9cfcb404638e32cd62d88e3501d44822208363c010179a3c90 | expected=1088 | actual=1088 | exists=True | partial=0
+[INFO] Model download / NO_KNOWN_TARGET_PARTIAL_FOUND — The known target digest partial was not found in candidate stores.
+    الإجراء المقترح: تأكد من مجلد النماذج الفعلي في server.log.
+
+==============================================================================
+6. NETWORK AND DOWNLOAD ENDPOINT CONNECTIVITY
+==============================================================================
+HOST registry.ollama.ai:443 | DNS=OK | TCP=CONNECTED | IPs=104.18.16.170,104.18.17.170
+HOST ollama.com:443 | DNS=OK | TCP=CONNECTED | IPs=34.36.133.15
+HOST dd20bb891979d25aebc8bec07b2b3bbc.r2.cloudflarestorage.com:443 | DNS=OK | TCP=CONNECTED | IPs=172.64.190.1,172.64.66.1
+[PASS] Download network / KNOWN_DOWNLOAD_HOSTS_REACHABLE — registry.ollama.ai, ollama.com, dd20bb891979d25aebc8bec07b2b3bbc.r2.cloudflarestorage.com
+    الإجراء المقترح: الاتصال الحالي متاح، لكنه لا يثبت استمرار نقل ملف النموذج.
+HTTP_PROXY configured: User=False | Machine=False | Process=False (values withheld)
+HTTPS_PROXY configured: User=False | Machine=False | Process=False (values withheld)
+ALL_PROXY configured: User=False | Machine=False | Process=False (values withheld)
+NO_PROXY configured: User=False | Machine=False | Process=False (values withheld)
+TCP connections owned by Ollama pull/server PID(s):
+  NONE VISIBLE
+
+==============================================================================
+7. WINDOWS APPLICATION EVENTS (LAST 3 DAYS)
+==============================================================================
+EVENT 11/25/2026 18:35:35 | ID=1001 | Windows Error Reporting | Information
+  Fault bucket 1407056795596027900, type 5
+Event Name: RADAR_PRE_LEAK_64
+Response: Not available
+Cab Id: 0
+
+Problem signature:
+P1: python.exe
+P2: 3.11.9150.1013
+P3: 10.0.26300.2.0.0
+P4: 
+P5: 
+P6: 
+P7: 
+P8: 
+P9: 
+P10: 
+
+Attached files:
+\\?\C:\Users\USER\AppData\Local\Temp\RDR7AC5.tmp\empty.txt
+\\?\C:\ProgramData\Microsoft\Windows\WER\Temp\WER.8e9b874a-5c2a-4843-93fd-f721768074e5.tmp.WERInternalMetadata.xml
+\\?\C:\ProgramData\Microsoft\Windows\WER\Temp\WER.3986886e-644f-4fe9-91ee-3301016d2582.tmp.csv
+\\?\C:\ProgramData\Microsoft\Windows\WER\Temp\WER.5e85a790-1cad-43b0-a15d-0fb3702d307b.tmp.txt
+\\?\C:\ProgramData\Microsoft\Windows\WER\Temp\WER.b8c70c58-93da-438b-825d-4e00f0cbb21f.tmp.xml
+
+These files may be available here:
+NULL
+
+Analysis symbol: 
+Rechecking for solution: 0
+Report Id: 4040396f-e37e-427b-a0fc-5d6db3fceb7e
+Report Status: 268435456
+Hashed bucket: 28dd4de13f414bbd0386deb3604cf7fc
+Cab Guid: 0
+
+==============================================================================
+8. CHAT PLATFORM / PYTHON / OPEN WEBUI
+==============================================================================
+Platform root exists: False
+Virtualenv Python: False (D:\LocalAI\Platform\.venv\Scripts\python.exe)
+Open WebUI executable: False (D:\LocalAI\Platform\.venv\Scripts\open-webui.exe)
+PLATFORM SETTING PRESENCE OLLAMA_BASE_URL : User=False Machine=False Process=False (values withheld)
+PLATFORM SETTING PRESENCE OLLAMA_BASE_URLS : User=False Machine=False Process=False (values withheld)
+PLATFORM SETTING PRESENCE ENABLE_OLLAMA_API : User=False Machine=False Process=False (values withheld)
+PLATFORM SETTING PRESENCE OPENAI_API_BASE_URL : User=False Machine=False Process=False (values withheld)
+PLATFORM SETTING PRESENCE OPENAI_API_BASE_URLS : User=False Machine=False Process=False (values withheld)
+PLATFORM SETTING PRESENCE WEBUI_URL : User=False Machine=False Process=False (values withheld)
+PLATFORM SETTING PRESENCE DATA_DIR : User=False Machine=False Process=False (values withheld)
+Platform virtualenv not found; Open WebUI environment cannot be queried.
+[ERROR] Open WebUI / VIRTUALENV_MISSING — D:\LocalAI\Platform\.venv\Scripts\python.exe not found.
+    الإجراء المقترح: من المرجح أن منصة المحادثة لم تُثبت أو أن التثبيت توقف في منتصفه.
+[ERROR] Open WebUI / OPEN_WEBUI_PACKAGE_MISSING — pip show did not report an installed open-webui distribution inside the project virtualenv.
+    الإجراء المقترح: افحص سجل pip داخل D:\LocalAI\Platform\.venv؛ لا تخلط بين Python العام وبيئة المشروع.
+Port 8080 listeners:
+  NONE
+HTTP http://127.0.0.1:8080/health => NO_RESPONSE code= server= error=Unable to connect to the remote server
+HTTP http://127.0.0.1:8080/health/db => NO_RESPONSE code= server= error=Unable to connect to the remote server
+HTTP http://127.0.0.1:8080/ready => NO_RESPONSE code= server= error=Unable to connect to the remote server
+HTTP http://127.0.0.1:8080/ => NO_RESPONSE code= server= error=Unable to connect to the remote server
+STATUS FILE: D:\LocalAI\ENGINE-STATUS.txt | exists=False | status=MISSING | lastWrite=
+STATUS FILE: D:\LocalAI\Platform\PLATFORM-STATUS.txt | exists=False | status=MISSING | lastWrite=
+STATUS FILE: D:\LocalAI\FULL-STATUS.txt | exists=False | status=MISSING | lastWrite=
+[WARNING] Open WebUI / NOT_READY_OR_NOT_INSTALLED — Open WebUI /health and /ready are not responding successfully.
+    الإجراء المقترح: راجع PLATFORM-STATUS وسجلات تشغيل Open WebUI.
+
+==============================================================================
+9. FILTER FILES, METADATA, AND IMPORT STATE
+==============================================================================
+FILTER MISSING: D:\LocalAI\Platform\Filters\01-Trusted-Content-Guard.py
+[ERROR] Filters / FILTER_FILE_MISSING — D:\LocalAI\Platform\Filters\01-Trusted-Content-Guard.py
+    الإجراء المقترح: أعد استخراج ملفات الفلاتر من الحزمة الصحيحة؛ لا تنشئ ملفات فارغة بدلها.
+FILTER MISSING: D:\LocalAI\Platform\Filters\02-Accuracy-Thinking.py
+[ERROR] Filters / FILTER_FILE_MISSING — D:\LocalAI\Platform\Filters\02-Accuracy-Thinking.py
+    الإجراء المقترح: أعد استخراج ملفات الفلاتر من الحزمة الصحيحة؛ لا تنشئ ملفات فارغة بدلها.
+FILTER MISSING: D:\LocalAI\Platform\Filters\03-Selective-Self-Review.py
+[ERROR] Filters / FILTER_FILE_MISSING — D:\LocalAI\Platform\Filters\03-Selective-Self-Review.py
+    الإجراء المقترح: أعد استخراج ملفات الفلاتر من الحزمة الصحيحة؛ لا تنشئ ملفات فارغة بدلها.
+Filter import guide exists: False
+Filter importer exists: False
+Filter activation/import state: NOT VERIFIED WITHOUT AN AUTHENTICATED ADMIN SESSION; no API key is requested or read.
+Filter AST check skipped: neither project virtualenv Python nor system Python was found.
+
+==============================================================================
+10. AUDIO / WHISPER / FFMPEG / SPEECH VOICES
+==============================================================================
+FFmpeg: NOT FOUND
+[ERROR] Audio / FFMPEG_MISSING — ffmpeg.exe was not found.
+    الإجراء المقترح: Whisper/Audio preprocessing may fail; install or repair Gyan.FFmpeg only after confirming platform state.
+WHISPER_MODEL_DIR configured: User=False | Process=False
+HuggingFace cache configured: HF_HOME=False | HUGGINGFACE_HUB_CACHE=False (values withheld)
+WHISPER CACHE CANDIDATE: source=HuggingFace default Windows cache exists=False files=0 size=0GB model.bin=0 path=C:\Users\USER\.cache\huggingface\hub
+WHISPER CACHE CANDIDATE: source=Project default cache exists=False files=0 size=0GB model.bin=0 path=D:\LocalAI\Platform\Data\cache\whisper\models
+[ERROR] Audio / FASTER_WHISPER_NOT_INSTALLED — faster-whisper package missing from platform Python environment.
+    الإجراء المقترح: ثبّت الاعتماد داخل بيئة Open WebUI نفسها، وليس Python العام.
+[ERROR] Audio / PYAV_PACKAGE_MISSING — Python package av is not installed in the Open WebUI virtualenv.
+    الإجراء المقترح: افحص سجل pip ثم أصلح اعتماديات البيئة الافتراضية؛ لا تثبت av في Python العام.
+Windows speech voices:
+  MSTTS_V110_enUS_DavidM language=
+  MSTTS_V110_enUS_MarkM language=
+  MSTTS_V110_enUS_ZiraM language=
+  TTS_MS_EN-US_DAVID_11.0 language=
+  TTS_MS_EN-US_ZIRA_11.0 language=
+Web Speech API in browser (per package documentation); actual Arabic voice availability must be verified in Edge/Open WebUI settings.
+
+==============================================================================
+11. LOCAL BINDINGS, SECRETS METADATA, AND SECURITY
+==============================================================================
+PORT 11434: no local listener
+PORT 8080: no local listener
+[PASS] Security / NO_WILDCARD_BINDINGS_DETECTED — No wildcard 0.0.0.0 or :: listener was detected on ports 11434 and 8080.
+Windows Defender Firewall profiles:
+  Domain enabled=True inbound=NotConfigured outbound=NotConfigured
+  Private enabled=True inbound=NotConfigured outbound=NotConfigured
+  Public enabled=True inbound=NotConfigured outbound=NotConfigured
+WebUI signing key file: NOT FOUND
+Database file absent: D:\LocalAI\Platform\Data\webui.db
+Database file absent: D:\LocalAI\Platform\Data\webui.db-wal
+Database file absent: D:\LocalAI\Platform\Data\webui.db-shm
+Ollama bind safety: check listener addresses above. 127.0.0.1 is local-only; 0.0.0.0 or a LAN address can expose the API to other devices.
+
+==============================================================================
+12. INSTALLED PROJECT STRUCTURE AND EXPECTED FILES
+==============================================================================
+MISSING [file] D:\LocalAI\ENGINE-STATUS.txt | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\FULL-STATUS.txt | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\MODEL-STORE-PATH.txt | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\START-ENGINE.bat | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\START-ENGINE.ps1 | size= | lastWrite= | sha256=
+PRESENT [file] D:\LocalAI\Config\Modelfile | size=926 | lastWrite=2026-11-25T21:24:14.5352304+04:00 | sha256=
+MISSING [file] D:\LocalAI\Platform\PLATFORM-STATUS.txt | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\Platform\README-AR-INTEGRATION.md | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\Platform\webui_secret_key.txt | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\Platform\.venv\Scripts\python.exe | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\Platform\.venv\Scripts\open-webui.exe | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\Platform\Filters\01-Trusted-Content-Guard.py | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\Platform\Filters\02-Accuracy-Thinking.py | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\Platform\Filters\03-Selective-Self-Review.py | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\Platform\START-CHAT.bat | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\Platform\START-CHAT.ps1 | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\Platform\CHECK-LOCALAI.bat | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\Platform\CHECK-LOCALAI.ps1 | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\Platform\IMPORT-FILTERS.bat | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\Platform\IMPORT-FILTERS.ps1 | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\Platform\FILTER-IMPORT-GUIDE-AR.md | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\Platform\TEST-FILTERS.py | size= | lastWrite= | sha256=
+PRESENT [directory] D:\LocalAI\Logs | size= | lastWrite= | sha256=
+PRESENT [directory] D:\LocalAI\Models | size= | lastWrite= | sha256=
+PRESENT [directory] D:\LocalAI\Models\blobs | size= | lastWrite= | sha256=
+PRESENT [directory] D:\LocalAI\Models\manifests | size= | lastWrite= | sha256=
+PRESENT [directory] D:\LocalAI\Config | size= | lastWrite= | sha256=
+MISSING [directory] D:\LocalAI\Cache | size= | lastWrite= | sha256=
+MISSING [directory] D:\LocalAI\Cache\pip | size= | lastWrite= | sha256=
+MISSING [directory] D:\LocalAI\Platform\Filters | size= | lastWrite= | sha256=
+MISSING [directory] D:\LocalAI\Platform\Data | size= | lastWrite= | sha256=
+MISSING [file] D:\LocalAI\Platform\Data\webui.db | size= | lastWrite= | sha256=
+MISSING [directory] D:\LocalAI\Platform\Data\cache | size= | lastWrite= | sha256=
+MISSING [directory] D:\LocalAI\Platform\Data\cache\huggingface | size= | lastWrite= | sha256=
+MISSING [directory] D:\LocalAI\Platform\Data\cache\huggingface\hub | size= | lastWrite= | sha256=
+MISSING [directory] D:\LocalAI\Platform\Data\cache\whisper\models | size= | lastWrite= | sha256=
+[ERROR] Project layout / CORE_FILES_MISSING — D:\LocalAI\ENGINE-STATUS.txt; D:\LocalAI\Platform\PLATFORM-STATUS.txt; D:\LocalAI\Platform\.venv\Scripts\python.exe; D:\LocalAI\Platform\.venv\Scripts\open-webui.exe; D:\LocalAI\Platform\Filters\01-Trusted-Content-Guard.py; D:\LocalAI\Platform\Filters\02-Accuracy-Thinking.py; D:\LocalAI\Platform\Filters\03-Selective-Self-Review.py; D:\LocalAI\Platform\START-CHAT.bat; D:\LocalAI\Platform\IMPORT-FILTERS.ps1
+    الإجراء المقترح: هذا يشير إلى تثبيت جزئي أو مسار مختلف؛ قارن مسارات الحزمة مع D:\LocalAI قبل إعادة التثبيت.
+
+==============================================================================
+13. LOG DIRECTORY INVENTORY AND KEY ERROR EXCERPTS
+==============================================================================
+LOGFILE model-recovery-v3-20261125-181541.log | 20246812 bytes | 11/25/2026 21:25:21
+LOGFILE download-monitor-20261125-204842.txt | 6759 bytes | 11/25/2026 20:49:45
+LOGFILE model-recovery-20261125-153850.log | 2298 bytes | 11/25/2026 15:38:53
+LOGFILE engine-install-20261125-143157.log | 2626 bytes | 11/25/2026 15:30:00
+--- model-recovery-v3-20261125-181541.log | 19.31 MB | 11/25/2026 21:25:21
+    [STDERR] pulling 02d45dc1cf45: 100% ▕██████████████████▏ 5.6 GB                         [K
+    [STDERR] pulling 08f9698c1116: 100% ▕██████████████████▏  177 B                         [K
+    [STDERR] verifying sha256 digest ⠋ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[1Gpulling manifest [K
+    [STDERR] pulling f836f08f9211: 100% ▕██████████████████▏ 921 MB                         [K
+    [STDERR] pulling 02d45dc1cf45: 100% ▕██████████████████▏ 5.6 GB                         [K
+    [STDERR] pulling 08f9698c1116: 100% ▕██████████████████▏  177 B                         [K
+    [STDERR] verifying sha256 digest ⠙ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[1Gpulling manifest [K
+    [STDERR] pulling f836f08f9211: 100% ▕██████████████████▏ 921 MB                         [K
+    [STDERR] pulling 02d45dc1cf45: 100% ▕██████████████████▏ 5.6 GB                         [K
+    [STDERR] pulling 08f9698c1116: 100% ▕██████████████████▏  177 B                         [K
+    [STDERR] verifying sha256 digest ⠹ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[1Gpulling manifest [K
+    [STDERR] pulling f836f08f9211: 100% ▕██████████████████▏ 921 MB                         [K
+    [STDERR] pulling 02d45dc1cf45: 100% ▕██████████████████▏ 5.6 GB                         [K
+    [STDERR] pulling 08f9698c1116: 100% ▕██████████████████▏  177 B                         [K
+    [STDERR] verifying sha256 digest ⠸ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[1Gpulling manifest [K
+    [STDERR] pulling f836f08f9211: 100% ▕██████████████████▏ 921 MB                         [K
+    [STDERR] pulling 02d45dc1cf45: 100% ▕██████████████████▏ 5.6 GB                         [K
+    [STDERR] pulling 08f9698c1116: 100% ▕██████████████████▏  177 B                         [K
+    [STDERR] verifying sha256 digest ⠼ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[1Gpulling manifest [K
+    [STDERR] pulling f836f08f9211: 100% ▕██████████████████▏ 921 MB                         [K
+    [STDERR] pulling 02d45dc1cf45: 100% ▕██████████████████▏ 5.6 GB                         [K
+    [STDERR] pulling 08f9698c1116: 100% ▕██████████████████▏  177 B                         [K
+    [STDERR] verifying sha256 digest ⠴ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[1Gpulling manifest [K
+    [STDERR] pulling f836f08f9211: 100% ▕██████████████████▏ 921 MB                         [K
+    [STDERR] pulling 02d45dc1cf45: 100% ▕██████████████████▏ 5.6 GB                         [K
+    [STDERR] pulling 08f9698c1116: 100% ▕██████████████████▏  177 B                         [K
+    [STDERR] verifying sha256 digest ⠦ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[1Gpulling manifest [K
+    [STDERR] pulling f836f08f9211: 100% ▕██████████████████▏ 921 MB                         [K
+    [STDERR] pulling 02d45dc1cf45: 100% ▕██████████████████▏ 5.6 GB                         [K
+    [STDERR] pulling 08f9698c1116: 100% ▕██████████████████▏  177 B                         [K
+    [STDERR] verifying sha256 digest ⠧ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[1Gpulling manifest [K
+    [STDERR] pulling f836f08f9211: 100% ▕██████████████████▏ 921 MB                         [K
+    [STDERR] pulling 02d45dc1cf45: 100% ▕██████████████████▏ 5.6 GB                         [K
+    [STDERR] pulling 08f9698c1116: 100% ▕██████████████████▏  177 B                         [K
+    [STDERR] verifying sha256 digest ⠇ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[1Gpulling manifest [K
+    [STDERR] pulling f836f08f9211: 100% ▕██████████████████▏ 921 MB                         [K
+    [STDERR] pulling 02d45dc1cf45: 100% ▕██████████████████▏ 5.6 GB                         [K
+    [STDERR] pulling 08f9698c1116: 100% ▕██████████████████▏  177 B                         [K
+    [STDERR] verifying sha256 digest ⠏ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[1Gpulling manifest [K
+    [STDERR] pulling f836f08f9211: 100% ▕██████████████████▏ 921 MB                         [K
+    [STDERR] pulling 02d45dc1cf45: 100% ▕██████████████████▏ 5.6 GB                         [K
+    [STDERR] pulling 08f9698c1116: 100% ▕██████████████████▏  177 B                         [K
+    [STDERR] verifying sha256 digest ⠋ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[1Gpulling manifest [K
+    [STDERR] pulling f836f08f9211: 100% ▕██████████████████▏ 921 MB                         [K
+    [STDERR] pulling 02d45dc1cf45: 100% ▕██████████████████▏ 5.6 GB                         [K
+    [STDERR] pulling 08f9698c1116: 100% ▕██████████████████▏  177 B                         [K
+    [STDERR] verifying sha256 digest ⠙ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[1Gpulling manifest [K
+    [STDERR] pulling f836f08f9211: 100% ▕██████████████████▏ 921 MB                         [K
+    [STDERR] pulling 02d45dc1cf45: 100% ▕██████████████████▏ 5.6 GB                         [K
+    [STDERR] pulling 08f9698c1116: 100% ▕██████████████████▏  177 B                         [K
+    [STDERR] verifying sha256 digest ⠹ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[1Gpulling manifest [K
+    [STDERR] pulling f836f08f9211: 100% ▕██████████████████▏ 921 MB                         [K
+    [STDERR] pulling 02d45dc1cf45: 100% ▕██████████████████▏ 5.6 GB                         [K
+    [STDERR] pulling 08f9698c1116: 100% ▕██████████████████▏  177 B                         [K
+    [STDERR] writing manifest ⠋ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[A[1Gpulling manifest [K
+    [STDERR] pulling f836f08f9211: 100% ▕██████████████████▏ 921 MB                         [K
+    [STDERR] pulling 02d45dc1cf45: 100% ▕██████████████████▏ 5.6 GB                         [K
+    [STDERR] pulling 08f9698c1116: 100% ▕██████████████████▏  177 B                         [K
+    [STDERR] writing manifest [K
+    [STDERR] success [K[?25h[?2026l
+    [2026-11-25 21:24:14] Ollama pull returned exit code 0.
+    [2026-11-25 21:24:14] Creating/updating model alias local-qwen35.
+    [2026-11-25 21:24:14] Create local model alias — starting. stdout and stderr are captured separately.
+    [STDERR] [?2026h[?25l[1Ggathering model components [K[?25h[?2026l[?2026h[?25l[1Ggathering model components [K[?25h[?2026l[?2026h[?25l[1Ggathering model components [K[?25h[?2026l[?2026h[?25l[1Ggathering model components [K[?25h[?2026l[?2026h[?25l[1Ggathering model components [K[?25h[?2026l[?2026h[?25l[1Ggathering model components [K
+    [STDERR] writing manifest ⠋ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[A[A[A[1Ggathering model components [K
+    [STDERR] writing manifest ⠙ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[A[A[A[1Ggathering model components [K
+    [STDERR] writing manifest ⠹ [K[?25h[?2026l[?2026h[?25l[A[A[A[A[A[A[A[1Ggathering model components [K
+    [STDERR] writing manifest [K
+    [STDERR] success [K[?25h[?2026l
+    [2026-11-25 21:25:21] RECOVERY FAILED: Model returned no completed final text. Check the Ollama server log.
+    [2026-11-25 21:25:21] Detailed log: D:\LocalAI\Logs\model-recovery-v3-20261125-181541.log
+    [2026-11-25 21:25:21] If the failure happens at pulling manifest, check the captured [STDERR] entry above; do not infer a model-store or network cause without that line.
+    [2026-11-25 21:25:21] No model files were intentionally deleted. Do not uninstall Ollama or delete cache/blob files.
+--- download-monitor-20261125-204842.txt | 0.01 MB | 11/25/2026 20:49:45
+    LOCAL AI - READ-ONLY DOWNLOAD MONITOR
+    This tool does not start/stop Ollama, does not issue another pull, and does not modify or delete model files.
+    OLLAMA PROCESSES:
+      PID=19772 PPID=9080 NAME=ollama.exe CMD=C:\Users\USER\AppData\Local\Programs\Ollama\ollama.exe serve
+      PID=3368 PPID=24028 NAME=ollama.exe CMD="C:\Users\USER\AppData\Local\Programs\Ollama\ollama.exe" "pull" "qwen3.5:9b-q4_K_M" 
+    OLLAMA TCP CONNECTIONS TO REMOTE PORT 443:
+    OLLAMA LOCAL API:
+    LOCAL MODEL TAGS:
+      No completed local model tag is currently listed.
+    LATEST TEMPORARY PULL OUTPUT:
+      Could not read temp output: Exception calling "ReadAllText" with "1" argument(s): "The process cannot access the file 'D:\LocalAI\Logs\943e4037ed5a4b1ca117bb0601470b21.stdout.tmp' because it is being used by another process."
+    LATEST BLOBS - SNAPSHOT 1:
+    Waiting 60 seconds to compare file timestamps and sizes. This does not interfere with the existing pull...
+    OLLAMA PROCESSES:
+      PID=19772 PPID=9080 NAME=ollama.exe CMD=C:\Users\USER\AppData\Local\Programs\Ollama\ollama.exe serve
+      PID=3368 PPID=24028 NAME=ollama.exe CMD="C:\Users\USER\AppData\Local\Programs\Ollama\ollama.exe" "pull" "qwen3.5:9b-q4_K_M" 
+    OLLAMA TCP CONNECTIONS TO REMOTE PORT 443:
+    LATEST TEMPORARY PULL OUTPUT:
+      Could not read temp output: Exception calling "ReadAllText" with "1" argument(s): "The process cannot access the file 'D:\LocalAI\Logs\943e4037ed5a4b1ca117bb0601470b21.stdout.tmp' because it is being used by another process."
+    LATEST BLOBS - SNAPSHOT 2 (AFTER 60 SECONDS):
+    - If a blob size or LastWriteTime advances, data is being written locally.
+    - If the temporary stdout file grows or its output changes, Ollama is reporting pull progress.
+    - If nothing changes, send this report plus the newest model-recovery-v3 log and the newest server.log tail.
+    REPORT SAVED: D:\LocalAI\Logs\download-monitor-20261125-204842.txt
+--- model-recovery-20261125-153850.log | 0 MB | 11/25/2026 15:38:53
+    [2026-11-25 15:38:50] LOCAL AI MODEL RECOVERY
+    [2026-11-25 15:38:50] This recovery tool does not reinstall Ollama and does not delete model/cache files.
+    [2026-11-25 15:38:50] Ollama executable: C:\Users\USER\AppData\Local\Programs\Ollama\ollama.exe
+    [2026-11-25 15:38:50] Ollama version: ollama version is 0.40.18
+    [2026-11-25 15:38:51] Ollama server is already running. Keeping it running to protect partial download data.
+    [2026-11-25 15:38:51] Configured model directory for future server starts: D:\LocalAI\Models
+    [2026-11-25 15:38:51] Starting model download. Do not close this window, restart Ollama, or reboot during the transfer.
+    [2026-11-25 15:38:51] Download attempt 1/4: ollama pull qwen3.5:9b-q4_K_M
+    [2026-11-25 15:38:53] RECOVERY FAILED: [?2026h[?25l[1Gpulling manifest ⠋ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠙ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠹ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠸ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠼ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠴ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠦ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠧ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠇ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠏ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠋ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠙ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠹ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠸ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠼ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠴ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠦ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠧ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠇ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠏ [K[?25h[?2026l[?2026h[?25l[1Gpulling manifest ⠋ [K[?25h[?2026l[?2026h[?25l[1Gpulling m [TRUNCATED]
+    [2026-11-25 15:38:53] Detailed log: D:\LocalAI\Logs\model-recovery-20261125-153850.log
+    [2026-11-25 15:38:53] No model files were intentionally deleted. Do not uninstall Ollama or manually delete partial blobs.
+--- engine-install-20261125-143157.log | 0 MB | 11/25/2026 15:30:00
+    Host Application: C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File C:\Users\USER\Downloads\LocalAI-Full-Installer-PAUSEFIX\INSTALL-ALL.ps1
+    LOCAL AI ENGINE INSTALLER - Windows 11 / 16 GB RAM
+    Installing Ollama from the official WinGet package...
+    Found Ollama [Ollama.Ollama] Version 0.40.18
+    Downloading https://github.com/ollama/ollama/releases/download/v0.40.18/OllamaSetup.exe
+    Successfully verified installer hash
+    Starting package install...
+    Successfully installed
+    Applying local-only Ollama settings and restarting its server...
+    PS>TerminatingError(Invoke-RestMethod): "The operation has timed out."
+    PS>TerminatingError(Invoke-RestMethod): "The operation has timed out."
+    PS>TerminatingError(Invoke-RestMethod): "The operation has timed out."
+    Downloading official model qwen3.5:9b-q4_K_M (Q4_K_M)...
+    Error: max retries exceeded: Get "https://dd20bb891979d25aebc8bec07b2b3bbc.r2.cloudflarestorage.com/ollama/docker/regist
+    ry/v2/blobs/sha256/02/02d45dc1cf451ba2475ac33b301c2dd8f985abe4c182ce04a1f2f5bf0260278d/data?X-Amz-Algorithm=AWS4-HMAC-SH
+    14f0da": read tcp 192.168.100.17:62044->172.64.66.1:443: wsarecv: A connection attempt failed because the connected part
+    y did not properly respond after a period of time, or established connection failed because connected host has failed to
+    INSTALL ERROR: Model download failed (ollama exit code 1). Check internet and D: free space, then rerun.
+Ollama server.log filtered tail:
+--- server.log | 0.11 MB | 11/26/2026 00:12:48
+    llama_model_loader: - kv  21:              qwen35.attention.value_length u32              = 256
+    llama_model_loader: - kv  22:                     qwen35.ssm.conv_kernel u32              = 4
+    llama_model_loader: - kv  23:                      qwen35.ssm.state_size u32              = 128
+    llama_model_loader: - kv  24:                     qwen35.ssm.group_count u32              = 16
+    llama_model_loader: - kv  25:                  qwen35.ssm.time_step_rank u32              = 32
+    llama_model_loader: - kv  26:                      qwen35.ssm.inner_size u32              = 4096
+    llama_model_loader: - kv  27:          qwen35.attention.recurrent_layers arr[bool,32]     = [true, true, true, false, true, true,...
+    llama_model_loader: - kv  28:             qwen35.full_attention_interval u32              = 4
+    llama_model_loader: - kv  29:                qwen35.rope.dimension_count u32              = 64
+    llama_model_loader: - kv  30:                       tokenizer.ggml.model str              = gpt2
+    llama_model_loader: - kv  31:                         tokenizer.ggml.pre str              = qwen35
+    llama_model_loader: - kv  32:                      tokenizer.ggml.tokens arr[str,248320]  = ["!", "\"", "#", "$", "%", "&", "'", ...
+    llama_model_loader: - kv  33:                  tokenizer.ggml.token_type arr[i32,248320]  = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
+    llama_model_loader: - kv  34:                      tokenizer.ggml.merges arr[str,247587]  = ["Ä  Ä ", "Ä Ä  Ä Ä ", "i n", "Ä  t",...
+    llama_model_loader: - kv  35:                tokenizer.ggml.eos_token_id u32              = 248046
+    llama_model_loader: - kv  36:            tokenizer.ggml.padding_token_id u32              = 248044
+    llama_model_loader: - kv  37:               tokenizer.ggml.add_bos_token bool             = false
+    llama_model_loader: - kv  38:                    tokenizer.chat_template str              = {%- set image_count = namespace(value...
+    llama_model_loader: - kv  39:               general.quantization_version u32              = 2
+    llama_model_loader: - kv  40:                          general.file_type u32              = 15
+    llama_model_loader: - type  f32:  177 tensors
+    llama_model_loader: - type q4_K:  217 tensors
+    llama_model_loader: - type q6_K:   33 tensors
+    print_info: model type            = 9B
+    print_info: model params          = 8.95 B
+    load_tensors: loading model tensors, this can take a while... (load_mode = none)
+    load_tensors:          CPU model buffer size =  2303.50 MiB
+    load_tensors:   CPU_REPACK model buffer size =  3054.38 MiB
+    llama_context: constructing llama_context
+    llama_context: n_seq_max             = 1
+    llama_context: n_ctx                 = 4096
+    llama_context: n_ctx_seq             = 4096
+    llama_context: n_batch               = 512
+    llama_context: n_ubatch              = 512
+    llama_context: causal_attn           = 1
+    llama_context: flash_attn            = auto
+    llama_context: kv_unified            = false
+    llama_context: freq_base             = 10000000.0
+    llama_context: freq_scale            = 1
+    llama_context: n_rs_seq              = 0
+    llama_context: n_outputs_max         = 1
+    llama_context: n_outputs_max_per_seq = 1
+    llama_context: n_ctx_seq (4096) < n_ctx_train (262144) -- the full capacity of the model will not be utilized
+    llama_context:        CPU  output buffer size =     0.95 MiB
+    llama_kv_cache:        CPU KV buffer size =   128.00 MiB
+    llama_memory_recurrent:        CPU RS buffer size =    50.25 MiB
+    llama_memory_recurrent: size =   50.25 MiB (     1 cells,  32 layers,  1 seqs  0 rs_seq), R (f32):    2.25 MiB, S (f32):   48.00 MiB, P (f32):    0.00 MiB
+    sched_reserve:        CPU compute buffer size =   116.02 MiB
+    cmn  common_init_: warming up the model with an empty run - please wait ... (--no-warmup to disable)
+    mtmd_model_loader: model name:   Source
+    mtmd_model_loader: description:  
+    mtmd_model_loader: GGUF version: 3
+    mtmd_model_loader: alignment:    32
+    mtmd_model_loader: n_tensors:    334
+    mtmd_model_loader: n_kv:         28
+    mtmd_model_loader: has vision encoder
+    load_hparams: Qwen-VL models require at minimum 1024 image tokens to function correctly on grounding tasks
+    load_hparams: model size:         878.99 MiB
+    mtmd_backends: using CPU backend
+    mtmd_context:        CPU compute buffer size =   248.10 MiB
+    srv    load_model: loaded multimodal model, 'D:\LocalAI\Models\blobs\sha256-f836f08f921193f4d6b6a6952dba0a6fb116759d26a757bcb395d570d73976ca'
+    cmn  common_conte: the context does not support partial sequence removal
+    srv    load_model: speculative decoding will use checkpoints
+    srv    load_model: initializing, n_slots = 1, n_ctx_slot = 4096, kv_unified = 'false'
+    slot   load_model: id  0 | task -1 | new slot, n_ctx = 4096
+    srv    load_model: prompt cache is enabled, size limit: 8192 MiB
+    srv    load_model: use `--cache-ram 0` to disable the prompt cache
+    srv    load_model: for more info see https://github.com/ggml-org/llama.cpp/pull/16391
+    srv    load_model: context checkpoints enabled, max = 32, min spacing = 8192
+    srv  server_run_i: model loaded
+    srv  server_on_li: listening on http://127.0.0.1:63259
+    time=2026-11-25T21:24:57.516+04:00 level=INFO source=images.go:431 msg="template selection" model=registry.ollama.ai/library/local-qwen35:latest selected=renderer_parser renderer=qwen3.5 parser=qwen3.5 go_template="[completion vision tools thinking]" chat_template="[tools thinking completion vision]" harmony=null renderer_parser="[completion vision tools thinking]"
+    time=2026-11-25T21:24:57.521+04:00 level=INFO source=sched.go:779 msg="loaded runners" count=1
+    slot   operator(): id  0 | task 0 | cached n_tokens = 0, memory_seq_rm [0, end)
+    slot   operator(): id  0 | task 0 | cached n_tokens = 183, memory_seq_rm [183, end)
+    slot create_check: id  0 | task 0 | created context checkpoint 1 of 32 (pos_min = 182, pos_max = 182, n_tokens = 183, size = 50.251 MiB)
+--- LocalAI-full-install-20261125-143157.log | 0 MB | 11/25/2026 15:30:01
+    [14:31:57] LOCAL AI INSTALLER
+    [14:31:57] PowerShell: 5.1.26100.9818
+    [14:31:57] Package directory: C:\Users\USER\Downloads\LocalAI-Full-Installer-PAUSEFIX
+    [14:31:57] Coordinator log: C:\Users\USER\AppData\Local\Temp\LocalAI-full-install-20261125-143157.log
+    [14:31:57] 
+    === STEP 1/2: ENGINE AND MODEL ===
+    [15:30:01] INSTALLATION FAILED: Model download failed (ollama exit code 1). Check internet and D: free space, then rerun.
+    [15:30:01] Coordinator log: C:\Users\USER\AppData\Local\Temp\LocalAI-full-install-20261125-143157.log
+    [15:30:01] Read the first error in this window and the newest child log in D:\LocalAI\Logs before retrying.
+    Model download failed (ollama exit code 1). Check internet and D: free space, then rerun.
+    At C:\Users\USER\Downloads\LocalAI-Full-Installer-PAUSEFIX\01-LocalAI-Engine\INSTALL-ENGINE.ps1:102 char:32
+    + ... DE -ne 0) { throw "Model download failed (ollama exit code $LASTEXITC ...
+    +                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        + CategoryInfo          : OperationStopped: (Model download ...ce, then rerun.:String) [], RuntimeException
+        + FullyQualifiedErrorId : Model download failed (ollama exit code 1). Check internet and D: free space, then rerun 
+       .
+     
+    
+
+==============================================================================
+14. INSTALLER PACKAGES AND SOURCE INTEGRITY
+==============================================================================
+AUDITING ZIP: C:\Users\USER\Downloads\LocalAI-Full-Diagnostic.zip | 0.04 MB | 11/26/2026 00:12:04
+  entries=7 compressed=0.04MB expanded=0.11MB estimatedExpanded=0.11MB decompression=OK manifest=6/6 missing=0 mismatch=0
+AUDITING ZIP: C:\Users\USER\Downloads\LocalAI-Studio-v3.2-Repair.zip | 0.1 MB | 11/26/2026 00:05:13
+  entries=26 compressed=0.1MB expanded=0.32MB estimatedExpanded=0.32MB decompression=OK manifest=0/0 missing=0 mismatch=0
+AUDITING ZIP: C:\Users\USER\Downloads\LocalAI-Studio-Production-Desk-v3.1-Repair-Update.zip | 0.17 MB | 11/25/2026 23:46:44
+  entries=21 compressed=0.17MB expanded=0.49MB estimatedExpanded=0.49MB decompression=OK manifest=0/0 missing=0 mismatch=0
+AUDITING ZIP: C:\Users\USER\Downloads\LocalAI-Studio-Production-Desk-v3.0-Update.zip | 0.08 MB | 11/25/2026 23:36:34
+  entries=12 compressed=0.08MB expanded=0.3MB estimatedExpanded=0.3MB decompression=OK manifest=0/0 missing=0 mismatch=0
+AUDITING ZIP: C:\Users\USER\Downloads\LocalAI-Studio-Production-Desk-v2.1-Update.zip | 0.07 MB | 11/25/2026 22:19:03
+  entries=9 compressed=0.07MB expanded=0.25MB estimatedExpanded=0.25MB decompression=OK manifest=0/0 missing=0 mismatch=0
+AUDITING ZIP: C:\Users\USER\Downloads\LocalAI-Download-Monitor.zip | 0 MB | 11/25/2026 20:48:18
+  entries=3 compressed=0MB expanded=0.01MB estimatedExpanded=0.01MB decompression=OK manifest=0/0 missing=0 mismatch=0
+AUDITING ZIP: C:\Users\USER\Downloads\LocalAI-Studio-Setup-FIXED.zip | 0.02 MB | 11/25/2026 18:19:15
+  entries=12 compressed=0.02MB expanded=0.06MB estimatedExpanded=0.06MB decompression=OK manifest=0/0 missing=0 mismatch=0
+AUDITING ZIP: C:\Users\USER\Downloads\LocalAI-Full-Repair-v3.zip | 0.06 MB | 11/25/2026 18:10:33
+  entries=32 compressed=0.06MB expanded=0.13MB estimatedExpanded=0.13MB decompression=OK manifest=31/31 missing=0 mismatch=0
+AUDITING ZIP: C:\Users\USER\Downloads\LocalAI-Studio-Setup.zip | 0.02 MB | 11/25/2026 18:08:53
+  entries=10 compressed=0.02MB expanded=0.06MB estimatedExpanded=0.06MB decompression=OK manifest=0/0 missing=0 mismatch=0
+AUDITING ZIP: C:\Users\USER\Downloads\LocalAI-Model-Recovery.zip | 0.01 MB | 11/25/2026 15:38:40
+  entries=4 compressed=0.01MB expanded=0.01MB estimatedExpanded=0.01MB decompression=OK manifest=0/0 missing=0 mismatch=0
+ZIP TOTAL AUDIT BUDGET: compressed=0.57MB expanded=1.74MB
+EXTRACTED PACKAGE WITHOUT MANIFEST AT ROOT OR ONE LEVEL: C:\Users\USER\Downloads\LocalAI-Download-Monitor
+EXTRACTED MANIFEST: C:\Users\USER\Downloads\LocalAI-Full-Diagnostic\MANIFEST-SHA256.txt | checked=6 ok=6 missing=0 mismatch=0
+EXTRACTED MANIFEST: C:\Users\USER\Downloads\LocalAI-Full-Installer-PAUSEFIX\MANIFEST-SHA256.txt | checked=28 ok=28 missing=0 mismatch=0
+EXTRACTED MANIFEST: C:\Users\USER\Downloads\LocalAI-Full-Repair-v3\LocalAI-Full-Repair-v3\MANIFEST-SHA256.txt | checked=31 ok=31 missing=0 mismatch=0
+EXTRACTED PACKAGE WITHOUT MANIFEST AT ROOT OR ONE LEVEL: C:\Users\USER\Downloads\LocalAI-Model-Recovery
+[WARNING] Installer packages / PACKAGE_READABLE_BUT_SOME_CONTENT_UNVERIFIED — ZIPs without manifest=8; extracted folders without manifest=2.
+    الإجراء المقترح: يمكن قراءة الملفات لكن لا يمكن تأكيد سلامتها بالبصمة دون MANIFEST-SHA256.txt.
+
+==============================================================================
+15. LIVE PROGRESS SNAPSHOT (READ ONLY)
+==============================================================================
+Snapshot 1 captured. Waiting 25 seconds to compare blob timestamp, size, pull process IO, and total network-interface counters.
+Target partial size delta over 25 sec: 0 bytes; lastWriteChanged=False
+Pull process IO delta: read= write= bytes (if available).
+All active network adapters delta: received=4834383 bytes; sent=82601 bytes (system-wide, not attributable solely to Ollama).
+[WARNING] Model download / NO_ACTIVE_PROGRESS_EVIDENCE — No target partial update detected in the snapshot.
+    الإجراء المقترح: تحقق من وجود تنزيل فعلي قبل أي استعادة.
+
+==============================================================================
+16. FINAL FINDINGS AND NEXT ACTIONS
+==============================================================================
+CRITICAL=0 | ERROR=9 | WARNING=4 | PASS=5 | INFO=2 | UNKNOWN=0
+- [WARNING] Hardware: LOW_MEMORY (SYS-RAM)
+  أغلق التطبيقات الثقيلة قبل تحميل النموذج؛ 16GB أو أقل يحدّ من التشغيل المتزامن للنموذج والصوت والمنصة.
+- [PASS] Storage: D_DRIVE_AVAILABLE (DISK-D)
+- [INFO] Ollama download: NO_PULL_PROCESS (OLLAMA-PULL)
+  إذا لم يكتمل النموذج، افحص ملفات partial وسجلات الاستعادة.
+- [PASS] Ollama: LOCAL_API_RESPONDS (OLLAMA-API)
+- [PASS] Model: LOCAL_ALIAS_EXISTS (MODEL-ALIAS)
+- [INFO] Model download: NO_KNOWN_TARGET_PARTIAL_FOUND (MODEL-PARTIAL)
+  تأكد من مجلد النماذج الفعلي في server.log.
+- [PASS] Download network: KNOWN_DOWNLOAD_HOSTS_REACHABLE (OLLAMA-NETWORK)
+  الاتصال الحالي متاح، لكنه لا يثبت استمرار نقل ملف النموذج.
+- [ERROR] Open WebUI: VIRTUALENV_MISSING (WEBUI-VENV)
+  من المرجح أن منصة المحادثة لم تُثبت أو أن التثبيت توقف في منتصفه.
+- [ERROR] Open WebUI: OPEN_WEBUI_PACKAGE_MISSING (WEBUI-PACKAGE)
+  افحص سجل pip داخل D:\LocalAI\Platform\.venv؛ لا تخلط بين Python العام وبيئة المشروع.
+- [WARNING] Open WebUI: NOT_READY_OR_NOT_INSTALLED (WEBUI-READY)
+  راجع PLATFORM-STATUS وسجلات تشغيل Open WebUI.
+- [ERROR] Filters: FILTER_FILE_MISSING (FILTER-MISSING-01-Trusted-Content-Guard.py)
+  أعد استخراج ملفات الفلاتر من الحزمة الصحيحة؛ لا تنشئ ملفات فارغة بدلها.
+- [ERROR] Filters: FILTER_FILE_MISSING (FILTER-MISSING-02-Accuracy-Thinking.py)
+  أعد استخراج ملفات الفلاتر من الحزمة الصحيحة؛ لا تنشئ ملفات فارغة بدلها.
+- [ERROR] Filters: FILTER_FILE_MISSING (FILTER-MISSING-03-Selective-Self-Review.py)
+  أعد استخراج ملفات الفلاتر من الحزمة الصحيحة؛ لا تنشئ ملفات فارغة بدلها.
+- [ERROR] Audio: FFMPEG_MISSING (AUDIO-FFMPEG)
+  Whisper/Audio preprocessing may fail; install or repair Gyan.FFmpeg only after confirming platform state.
+- [ERROR] Audio: FASTER_WHISPER_NOT_INSTALLED (AUDIO-WHISPER-PKG)
+  ثبّت الاعتماد داخل بيئة Open WebUI نفسها، وليس Python العام.
+- [ERROR] Audio: PYAV_PACKAGE_MISSING (AUDIO-PYAV)
+  افحص سجل pip ثم أصلح اعتماديات البيئة الافتراضية؛ لا تثبت av في Python العام.
+- [PASS] Security: NO_WILDCARD_BINDINGS_DETECTED (LOCAL-API-BINDING)
+- [ERROR] Project layout: CORE_FILES_MISSING (PROJECT-MISSING-FILES)
+  هذا يشير إلى تثبيت جزئي أو مسار مختلف؛ قارن مسارات الحزمة مع D:\LocalAI قبل إعادة التثبيت.
+- [WARNING] Installer packages: PACKAGE_READABLE_BUT_SOME_CONTENT_UNVERIFIED (PACKAGE-INTEGRITY)
+  يمكن قراءة الملفات لكن لا يمكن تأكيد سلامتها بالبصمة دون MANIFEST-SHA256.txt.
+- [WARNING] Model download: NO_ACTIVE_PROGRESS_EVIDENCE (DOWNLOAD-STATE)
+  تحقق من وجود تنزيل فعلي قبل أي استعادة.
+
+IMPORTANT LIMITATIONS:
+- Filter activation and web-search settings cannot be proven without an authenticated Open WebUI admin session; no API key is read.
+- Real microphone capture and browser TTS voice playback require a manual UI test; this script only checks installed files/packages/Windows voice registry.
+- A TCP connection proves reachability, not throughput. Blob size/write-time and process IO are stronger progress indicators.
+- The diagnostic does not stop a stalled process, restart Ollama, reconfigure paths, reinstall dependencies, or delete partial blobs.
+- Windows Application crash events (IDs 1000, 1001, 1026) are searched over the last 3 days; access may be limited by Windows policy.
+- Power plan/sleep settings and physical disk health are queried read-only; some storage providers may not expose SMART/health information.
+- Open WebUI connection-related environment settings are reported as presence flags only; config files, API keys and signing keys are not read.
+- Whisper cache inspection checks configured paths and the HuggingFace default Windows cache; custom download_root paths may still require manual identification.
+- ZIP auditing is capped to 10 archives, 2 GB combined compressed input, and 3 GB total expanded data; oversized or skipped archives are explicitly marked.
+- Review this report before sharing; it includes local paths, hardware, process IDs, package names, and sanitized log excerpts.
