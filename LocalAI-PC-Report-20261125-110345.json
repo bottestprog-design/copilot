@@ -1,0 +1,68 @@
+﻿{
+    "ReportGeneratedLocal":  "2026-11-25 11:03:45 +04:00",
+    "PrivacyNote":  "Read-only report. No serial numbers, product keys, user documents, passwords, or network data are collected. Nothing is uploaded.",
+    "Windows":  {
+                    "Edition":  "Microsoft Windows 11 Pro",
+                    "Version":  "10.0.26300",
+                    "Build":  "26300",
+                    "Architecture":  "64-bit",
+                    "PowerShell":  "5.1.26100.9818"
+                },
+    "Processor":  {
+                      "Name":  "11th Gen Intel(R) Core(TM) i7-1185G7 @ 3.00GHz",
+                      "PhysicalCores":  4,
+                      "LogicalProcessors":  8,
+                      "MaxClock":  "1805 MHz"
+                  },
+    "Memory":  {
+                   "TotalRAM":  "16.0 GB",
+                   "TotalRAMBytes":  17179869184,
+                   "Modules":  [
+                                   {
+                                       "Capacity":  "16.0 GB",
+                                       "SpeedMHz":  3200,
+                                       "Manufacturer":  "80AD000080AD",
+                                       "FormFactorCode":  12
+                                   }
+                               ]
+               },
+    "Graphics":  {
+                     "Adapters":  [
+                                      {
+                                          "Name":  "Intel(R) Iris(R) Xe Graphics",
+                                          "ApproxDedicatedVideoMemory":  "2.0 GB",
+                                          "DriverVersion":  "32.0.101.7088",
+                                          "DriverDate":  "06/17/2026 04:00:00",
+                                          "VideoProcessor":  "Intel(R) Iris(R) Xe Graphics Family"
+                                      }
+                                  ],
+                     "NVIDIA_SMI_Details":  [
+
+                                            ],
+                     "Note":  "If dedicated VRAM is not reported, share the GPU model; it can be checked accurately from the vendor specifications."
+                 },
+    "Storage":  [
+                    {
+                        "Drive":  "C:",
+                        "VolumeName":  "Windows-26H2",
+                        "Size":  "200.1 GB",
+                        "Free":  "115.4 GB"
+                    },
+                    {
+                        "Drive":  "D:",
+                        "VolumeName":  "Data/Backup",
+                        "Size":  "275.8 GB",
+                        "Free":  "275.7 GB"
+                    }
+                ],
+    "DeveloperAndAItools":  {
+                                "Ollama":  "Not installed / not found in PATH",
+                                "Git":  "git version 2.56.1.windows.1",
+                                "Python":  "Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings \u003e Apps \u003e Advanced app settings \u003e App execution aliases.",
+                                "PythonLauncher":  "Not installed / not found in PATH",
+                                "NodeJS":  "Not installed / not found in PATH",
+                                "Docker":  "Not installed / not found in PATH",
+                                "VSCode":  "Not installed / not found in PATH",
+                                "WSL":  "T\u0000h\u0000e\u0000 \u0000W\u0000i\u0000n\u0000d\u0000o\u0000w\u0000s\u0000 \u0000S\u0000u\u0000b\u0000s\u0000y\u0000s\u0000t\u0000e\u0000m\u0000 \u0000f\u0000o\u0000r\u0000 \u0000L\u0000i\u0000n\u0000u\u0000x\u0000 \u0000i\u0000s\u0000 \u0000n\u0000o\u0000t\u0000 \u0000i\u0000n\u0000s\u0000t\u0000a\u0000l\u0000l\u0000e\u0000d\u0000.\u0000 \u0000Y\u0000o\u0000u\u0000 \u0000c\u0000a\u0000n\u0000 \u0000i\u0000n\u0000s\u0000t\u0000a\u0000l\u0000l\u0000 \u0000b\u0000y\u0000 \u0000r\u0000u\u0000n\u0000n\u0000i\u0000n\u0000g\u0000 \u0000\u0027\u0000w\u0000s\u0000l\u0000.\u0000e\u0000x\u0000e\u0000 \u0000-\u0000-\u0000i\u0000n\u0000s\u0000t\u0000a\u0000l\u0000l\u0000\u0027\u0000.\u0000 \u0000"
+                            }
+}
