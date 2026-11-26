@@ -1,0 +1,32 @@
+LOCALAI STUDIO v3.4 DESKTOP CHAT — BUILD TEST REPORT
+
+Implemented:
+  PASS  CHECK-LOCALAI.ps1 rewritten with parser-safe ASCII diagnostics and durable reports.
+  PASS  VERIFY-MODEL.ps1 rewritten with an ASCII prompt and safe report-folder creation.
+  PASS  UTF-8 BOM added to every PowerShell script for Windows PowerShell 5.1 decoding.
+  PASS  Added SETUP-LOCALAI.bat as the one-file install/update entrypoint.
+  PASS  Added branded Desktop and Start Menu shortcuts with a multi-resolution Windows .ico icon.
+  PASS  Desktop launcher shows startup status and opens Edge/Chrome in app mode.
+  PASS  Package verification distinguishes the extracted ZIP from the installed runtime folder.
+  PASS  Optional audio libraries, Whisper model and FFmpeg no longer block text-chat setup or repair.
+  PASS  Existing Qwen model manifests/blobs are SHA-256 checked where local manifests are available; otherwise the manager records a warning.
+  PASS  Qwen automatic download remains disabled by default.
+
+Executed in the Linux build container:
+  PASS  Python syntax compilation for all project Python files (in-memory compile; no bytecode left in package).
+  PASS  TEST-FILTERS.py.
+  PASS  TEST-MODEL-MANAGER.py — 6 offline tests.
+  PASS  TEST-FILTER-POLICY.py.
+  PASS  TEST-RELEASE.py — manifest, file coverage, BOM, setup flow and icon checks.
+  PASS  PowerShell lexical structure scan — 15 scripts, strings/comments/here-strings/delimiters.
+  PASS  Batch structure scan — CRLF, labels and GOTO targets.
+  NOT RUN  Native Windows PowerShell 5.1 parser/runtime on a Windows host.
+  NOT RUN  Windows-only process, WinForms, COM shortcut, Edge/Chrome app-window, Open WebUI live startup, Ollama API and real Qwen inference tests.
+
+The SETUP file runs VERIFY-PACKAGE.ps1 on Windows before copying any package files. That verifier uses the native PowerShell Parser on every manifest-managed .ps1 file. Thus the target Windows machine produces the definitive parser result; this Linux build does not claim that the Windows parser/runtime passed.
+
+Safety boundaries:
+  - Setup copies only files listed in MANIFEST-SHA256.txt into D:\LocalAI\Platform.
+  - D:\LocalAI\Models, Ollama model blobs, D:\LocalAI\Platform\Data, chat DB, secrets and user files are not package-copy targets.
+  - No Ollama stop, reinstall, upgrade or service restart command was added.
+  - No image/video generation stack is included.
