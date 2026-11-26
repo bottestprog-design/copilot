@@ -1,0 +1,64 @@
+{
+  "name": "Qwen-Image 2.1 7B — نص إلى صورة (ComfyUI API)",
+  "task": "image",
+  "model_id": "qwen-image-2.1",
+  "model_name": "Qwen-Image 2.1 · 7B",
+  "source_url": "https://github.com/Comfy-Org/workflow_templates/blob/main/benchmarks/image_qwen_image_2_1_t2i.json",
+  "license": "Qwen Research License (non-commercial only)",
+  "requirements": [
+    {
+      "folder": "diffusion_models",
+      "file": "qwen_image_2.1_int8_convrot.safetensors",
+      "size": "6.76 GB"
+    },
+    {
+      "folder": "text_encoders",
+      "file": "qwen3vl_8b_int8_convrot.safetensors",
+      "size": "8.71 GB"
+    },
+    {
+      "folder": "vae",
+      "file": "qwen_image_2.1_vae_bf16.safetensors",
+      "size": "644 MB"
+    }
+  ],
+  "notes": [
+    "Requires a recent ComfyUI build with native TextEncodeQwenImage21 and QwenImage21Cache nodes.",
+    "This packaged text-to-image graph disables the optional separate Qwen3.5 prompt-rewriter branch; use the installed local Ollama/Qwen prompt enhancer from this Studio.",
+    "The default CFG is 1; increase it only if you specifically want classifier-free guidance and negative-prompt effects."
+  ],
+  "bindings": {
+    "positive": {
+      "node_id": "459:452",
+      "input": "prompt"
+    },
+    "negative": {
+      "node_id": "459:452",
+      "input": "negative_prompt"
+    },
+    "seed": {
+      "node_id": "459:458",
+      "input": "seed"
+    },
+    "steps": {
+      "node_id": "459:458",
+      "input": "steps"
+    },
+    "cfg": {
+      "node_id": "459:458",
+      "input": "cfg"
+    },
+    "width": {
+      "node_id": "459:460",
+      "input": "value"
+    },
+    "height": {
+      "node_id": "459:461",
+      "input": "value"
+    },
+    "batch_size": {
+      "node_id": "459:456",
+      "input": "batch_size"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "1": {
+    "inputs": {"ckpt_name": "CHOOSE_AN_INSTALLED_SDXL_CHECKPOINT"},
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {"title": "Load SDXL checkpoint"}
+  },
+  "2": {
+    "inputs": {"text": "cinematic professional photograph, highly detailed subject, intentional composition, natural lighting", "clip": ["1", 1]},
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "Positive Prompt"}
+  },
+  "3": {
+    "inputs": {"text": "low quality, blurry, malformed anatomy, extra fingers, distorted face, watermark, text artifacts", "clip": ["1", 1]},
+    "class_type": "CLIPTextEncode",
+    "_meta": {"title": "Negative Prompt"}
+  },
+  "4": {
+    "inputs": {"width": 1024, "height": 1024, "batch_size": 1},
+    "class_type": "EmptyLatentImage",
+    "_meta": {"title": "Image Dimensions"}
+  },
+  "5": {
+    "inputs": {"seed": 123456789, "steps": 28, "cfg": 6.0, "sampler_name": "dpmpp_2m", "scheduler": "karras", "denoise": 1.0, "model": ["1", 0], "positive": ["2", 0], "negative": ["3", 0], "latent_image": ["4", 0]},
+    "class_type": "KSampler",
+    "_meta": {"title": "Sampling"}
+  },
+  "6": {
+    "inputs": {"samples": ["5", 0], "vae": ["1", 2]},
+    "class_type": "VAEDecode",
+    "_meta": {"title": "Decode Image"}
+  },
+  "7": {
+    "inputs": {"filename_prefix": "LocalAIStudio/Image", "images": ["6", 0]},
+    "class_type": "SaveImage",
+    "_meta": {"title": "Save Result"}
+  }
+}
