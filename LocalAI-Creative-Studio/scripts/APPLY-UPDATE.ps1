@@ -302,7 +302,7 @@ try {
     Write-OwnedUpdateFolderMarker $StageRoot 'stage'
     Write-OwnedUpdateFolderMarker $BackupRoot 'backup'
     $stageArgs = @(
-        $SourceRoot, $StageRoot, '/E', '/R:2', '/W:2', '/NFL', '/NDL', '/NJH', '/NJS', '/NP',
+        $SourceRoot, $StageRoot, '/E', '/XJ', '/R:2', '/W:2', '/NFL', '/NDL', '/NJH', '/NJS', '/NP',
         '/XD', '.venv', '.venv.next', '__pycache__', '.pytest_cache', '.mypy_cache', '.ruff_cache', 'node_modules', '.git', '.idea', '.vscode',
         '/XF', '*.sqlite*', '*.db*', '*.log', '*.pyc', '*.pyo', '*.tmp', '*.bak'
     )
