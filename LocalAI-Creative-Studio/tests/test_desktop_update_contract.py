@@ -280,10 +280,12 @@ class DesktopUpdateContractTests(unittest.TestCase):
         self.assertIn("'.mypy_cache'", self.installer)
         self.assertIn("'.ruff_cache'", self.installer)
         self.assertIn("'node_modules'", self.installer)
+        self.assertIn("'/XJ'", self.installer)
         updater = (ROOT / "scripts" / "APPLY-UPDATE.ps1").read_text(encoding="utf-8-sig")
         self.assertIn("'.mypy_cache'", updater)
         self.assertIn("'.ruff_cache'", updater)
         self.assertIn("'node_modules'", updater)
+        self.assertIn("'/XJ'", updater)
 
     def test_app_runtime_is_promoted_transactionally(self):
         self.assertIn(".venv.next", self.installer)
@@ -467,6 +469,7 @@ class DesktopUpdateContractTests(unittest.TestCase):
         self.assertIn("product_id -eq 'localai-creative-studio'", resolver)
         self.assertIn("schema_version -eq 1", resolver)
         self.assertIn("[IO.FileAttributes]::ReparsePoint", resolver)
+        self.assertIn("Test-LocalAIPlainPackageTree", resolver)
         self.assertIn("Get-VerifiedLocalAIInstallRoot", stop)
         self.assertIn("Get-VerifiedLocalAIInstallRoot", check)
 
