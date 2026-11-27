@@ -1,0 +1,4 @@
+﻿ -V:3.14 *        C:\Users\USER\AppData\Local\LocalAI\CreativeStudioRuntime\Python314-LocalAI\python.exe
+ -V:3.13          D:\LocalAI\CreativeStudioData\runtime\Python313\python.exe
+ -V:3.11          C:\Users\USER\AppData\Local\Programs\Python\Python311\python.exe
+

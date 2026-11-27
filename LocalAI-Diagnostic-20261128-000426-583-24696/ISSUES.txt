@@ -1,0 +1,1 @@
+﻿Directory discovery cap reached under C:\Users\USER\AppData\Local (625 examined).
