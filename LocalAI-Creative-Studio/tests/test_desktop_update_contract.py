@@ -327,6 +327,12 @@ class DesktopUpdateContractTests(unittest.TestCase):
         self.assertIn("Test-LocalAIInstallOwnerMarker", self.installer)
         self.assertIn("Test-LocalAILegacyInstall", self.installer)
 
+    def test_direct_updater_avoids_an_unverified_default_directory(self):
+        updater = (ROOT / "scripts" / "APPLY-UPDATE.ps1").read_text(encoding="utf-8-sig")
+        self.assertIn("Get-AvailableLocalAIInstallRoot -DefaultRoot $DefaultInstallRoot", updater)
+        self.assertIn("Test-LocalAIInstallOwnerMarker $sourceCandidate", updater)
+        self.assertIn("Test-LocalAILegacyInstall $sourceCandidate", updater)
+
     def test_preexisting_empty_install_root_is_reused_without_recreating_it(self):
         first_install = self.installer.split("# First install: only write into a new or explicitly owned folder.", 1)[1].split("$copyArgs =", 1)[0]
         self.assertIn("if (Test-Path -LiteralPath $InstallRoot -PathType Container)", first_install)
