@@ -26,7 +26,10 @@ function Test-LocalAIInstallOwnerMarker {
                 if ($item.PSIsContainer -or (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0)) { return $false }
             }
             $version = (Get-Content -LiteralPath (Join-Path $root 'VERSION.txt') -Raw -ErrorAction Stop).Trim()
-            return ($version -match '^[0-9]+\.[0-9]+\.[0-9]+    } catch { return $false }
+            $parsedVersion = [version]::MinValue
+            return [version]::TryParse($version, [ref]$parsedVersion)
+        }
+    } catch { return $false }
 }
 
 function Test-LocalAILegacyInstall {
