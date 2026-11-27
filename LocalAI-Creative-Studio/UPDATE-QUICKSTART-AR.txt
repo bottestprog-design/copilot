@@ -7,6 +7,9 @@ FIRST INSTALL
 4) Setup creates the private Python runtime when needed, builds an isolated .venv, resolves bounded dependency ranges using binary wheels, runs pip check, imports the app, and executes the full shipped regression suite before promoting the environment or creating shortcuts.
 5) After success, open the new LocalAI Creative Studio icon on the Desktop.
 
+INSTALL FOLDER COLLISION / RECOVERY
+If %LOCALAPPDATA%\Programs\LocalAI Creative Studio already exists but cannot be verified, setup does not delete, rename, or write into it. It searches for a verified prior LocalAI install, then selects a free sibling folder such as "LocalAI Creative Studio (Managed)" (or a numbered variant). The owner marker records the selected path so updater, launcher diagnostics, and maintenance tools can rediscover it. Leave the unverified folder untouched until you have inspected it yourself.
+
 DAILY USE
 Double-click the LocalAI Creative Studio Desktop icon. The launcher starts only the local Studio service and opens an Edge/Chrome app window when available.
 
