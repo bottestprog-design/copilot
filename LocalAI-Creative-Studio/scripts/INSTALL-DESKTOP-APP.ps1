@@ -2,9 +2,22 @@
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 $SourceRoot = Split-Path -Parent $PSScriptRoot
-$InstallRoot = Join-Path $env:LOCALAPPDATA 'Programs\LocalAI Creative Studio'
+$DefaultInstallRoot = Join-Path $env:LOCALAPPDATA 'Programs\LocalAI Creative Studio'
 $SystemPowerShell = Join-Path $env:WINDIR 'System32\WindowsPowerShell\v1.0\powershell.exe'
 . (Join-Path $PSScriptRoot 'DATA-PATH.ps1')
+. (Join-Path $PSScriptRoot 'INSTALL-ROOT.ps1')
+
+# Prefer an existing, verified LocalAI installation wherever this product has
+# previously placed it. Never claim or modify an unrelated folder at the default path.
+$InstallRoot = Get-VerifiedLocalAIInstallRoot -FallbackRoot $DefaultInstallRoot
+if (-not (Test-LocalAIInstallOwnerMarker $InstallRoot) -and -not (Test-LocalAILegacyInstall $InstallRoot)) {
+    $sourceCandidate = [System.IO.Path]::GetFullPath($SourceRoot).TrimEnd('\')
+    if ((Test-LocalAIInstallOwnerMarker $sourceCandidate) -or (Test-LocalAILegacyInstall $sourceCandidate)) {
+        $InstallRoot = $sourceCandidate
+    } elseif (-not $Installed) {
+        $InstallRoot = Get-AvailableLocalAIInstallRoot -DefaultRoot $DefaultInstallRoot
+    }
+}
 $InstallOwnershipMarker = Join-Path $InstallRoot '.localai-creative-studio-owner.json'
 
 function Write-InstallOwnershipMarker {
@@ -213,9 +226,9 @@ if (-not $Installed) {
     Write-Host 'Preparing or updating the permanent per-user desktop application...' -ForegroundColor Cyan
     $sourceFull = [System.IO.Path]::GetFullPath($SourceRoot).TrimEnd('\')
     $installFull = [System.IO.Path]::GetFullPath($InstallRoot).TrimEnd('\')
-    if (Test-Path -LiteralPath $InstallRoot -PathType Container) {
+    if (Test-Path -LiteralPath $InstallRoot) {
         if (-not (Test-ManagedInstall)) {
-            throw "Safety stop: '$InstallRoot' already exists but cannot be verified as a LocalAI Creative Studio installation. No file or shortcut was changed. Rename that unrelated folder or choose a different per-user install location, then retry."
+            throw "Safety stop: the selected LocalAI installation path is occupied by an unverified file or directory: '$InstallRoot'. No existing item was changed. Choose another per-user location and retry."
         }
         Write-InstallOwnershipMarker
     }
