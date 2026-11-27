@@ -316,10 +316,13 @@ class DesktopUpdateContractTests(unittest.TestCase):
         self.assertNotRegex(self.installer, re.compile(r"Remove-Item[^\r\n]*(Desktop|StartMenu|\$Desktop|\$StartMenu)", re.I))
         self.assertNotIn("/MIR", self.installer.upper())
 
-    def test_install_root_collision_with_an_unrelated_program_is_a_hard_stop(self):
-        self.assertIn("cannot be verified as a LocalAI Creative Studio installation", self.installer)
-        self.assertIn("No file or shortcut was changed", self.installer)
-        self.assertIn("Programs\\LocalAI Creative Studio", self.installer)
+    def test_unverified_default_install_folder_is_preserved_and_safe_alternate_is_selected(self):
+        self.assertIn("Get-AvailableLocalAIInstallRoot -DefaultRoot $DefaultInstallRoot", self.installer)
+        self.assertIn("No existing item was changed", self.installer)
+        resolver = (ROOT / "scripts" / "INSTALL-ROOT.ps1").read_text(encoding="utf-8-sig")
+        self.assertIn("LocalAI Creative Studio (Managed)", resolver)
+        self.assertIn("Test-LocalAIInstallOwnerMarker", self.installer)
+        self.assertIn("Test-LocalAILegacyInstall", self.installer)
 
     def test_preexisting_empty_install_root_is_reused_without_recreating_it(self):
         first_install = self.installer.split("# First install: only write into a new or explicitly owned folder.", 1)[1].split("$copyArgs =", 1)[0]
