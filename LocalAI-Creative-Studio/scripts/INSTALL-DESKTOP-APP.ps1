@@ -268,7 +268,7 @@ if (-not $Installed) {
             New-Item -ItemType Directory -Path $InstallRoot -ErrorAction Stop | Out-Null
         }
         Write-InstallOwnershipMarker
-        $copyArgs = @($SourceRoot,$InstallRoot,'/E','/R:2','/W:2','/NFL','/NDL','/NJH','/NJS','/NP','/XD','.venv','.venv.next','__pycache__','.pytest_cache','.mypy_cache','.ruff_cache','node_modules','.git','.idea','.vscode','/XF','*.sqlite*','*.db*','*.log','*.pyc','*.pyo','*.tmp','*.bak')
+        $copyArgs = @($SourceRoot,$InstallRoot,'/E','/XJ','/R:2','/W:2','/NFL','/NDL','/NJH','/NJS','/NP','/XD','.venv','.venv.next','__pycache__','.pytest_cache','.mypy_cache','.ruff_cache','node_modules','.git','.idea','.vscode','/XF','*.sqlite*','*.db*','*.log','*.pyc','*.pyo','*.tmp','*.bak')
         & robocopy.exe @copyArgs
         if ($LASTEXITCODE -ge 8) { throw "Could not copy application files into $InstallRoot (robocopy exit code $LASTEXITCODE)." }
         if (-not (Test-Path -LiteralPath $SystemPowerShell -PathType Leaf)) { $SystemPowerShell = 'powershell.exe' }
