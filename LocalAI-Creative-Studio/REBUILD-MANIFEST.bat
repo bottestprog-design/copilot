@@ -27,6 +27,7 @@ if errorlevel 1 (
 echo Manifest rebuilt. Review every changed file before redistributing the package.
 pause
 endlocal
+exit /b 0
 
 :no_python
 echo No verified prepared Studio Python environment was found.
