@@ -278,7 +278,7 @@ async function refreshQueue(){
 }
 $('#interrupt-queue').addEventListener('click',async()=>{
   if(!confirm('سيتم إرسال طلب إيقاف للعملية الجارية حالياً. هل تريد المتابعة؟'))return;
-  try{await api('/api/queue/interrupt',{method:'POST'});toast('تم إرسال طلب إيقاف العملية الحالية.','success');await refreshQueue();}
+  try{const result=await api('/api/queue/interrupt',{method:'POST'});if(result.interrupted){toast('تم إرسال طلب إيقاف مهمة الاستوديو.','success');}else{toast(result.message||'لم يتم إيقاف أي مهمة؛ المهمة الجارية ليست مهمة مؤكدة لهذا الاستوديو.','info');}await refreshQueue();}
   catch(error){toast(error.message,'error');}
 });
 $('#clear-queue').addEventListener('click',async()=>{
@@ -288,7 +288,7 @@ $('#clear-queue').addEventListener('click',async()=>{
 });
 
 function statusLabel(status) {
-  const labels = {queued:'في الانتظار',running:'قيد التنفيذ',completed:'اكتمل',failed:'فشل',cancelled:'أُلغي',missing:'غير موجود في سجل المحرك'};
+  const labels = {submitting:'جارٍ تأكيد الإرسال',queued:'في الانتظار',running:'قيد التنفيذ',completed:'اكتمل',failed:'فشل',cancelled:'أُلغي',missing:'غير موجود في سجل المحرك'};
   return esc(labels[String(status || '')] || 'غير معروف');
 }
 function outputElement(output) {
@@ -301,11 +301,18 @@ function outputElement(output) {
   if (audio) return `<audio src="${esc(url)}" controls preload="metadata"></audio>`;
   return `<img src="${esc(url)}" alt="نتيجة مولدة" loading="lazy">`;
 }
-function jobCard(job, compact=false) {
-  const output = (job.outputs || [])[0];
-  const preview = output ? outputElement(output) : `<div class="processing">${job.status==='failed' ? 'تعذر إكمال العملية' : job.status==='completed' ? 'اكتملت العملية' : job.status==='cancelled' ? 'أُلغيت قبل التشغيل' : job.status==='missing' ? 'اختفت من سجل ComfyUI' : '◌ قيد التوليد...'}</div>`;
+function jobCard(job, compact=false, showAllOutputs=false) {
+  const outputs = Array.isArray(job.outputs) ? job.outputs.filter(output => output && typeof output === 'object') : [];
+  const visibleOutputs = showAllOutputs ? outputs : outputs.slice(0, 1);
+  const preview = visibleOutputs.length
+    ? visibleOutputs.map((output, index) => showAllOutputs
+      ? `<div class="job-output" aria-label="نتيجة ${index + 1}">${outputElement(output)}</div>`
+      : outputElement(output)).join('')
+    : `<div class="processing">${job.status==='failed' ? 'تعذر إكمال العملية' : job.status==='completed' ? 'اكتملت العملية' : job.status==='cancelled' ? 'أُلغيت قبل التشغيل' : job.status==='missing' ? 'اختفت من سجل ComfyUI' : job.status==='submitting' ? 'جارٍ تأكيد إرسال المهمة...' : '◌ قيد التوليد...'}</div>`;
+  const previewClass = showAllOutputs && outputs.length > 1 ? 'job-output-grid' : '';
+  const outputCount = outputs.length > 1 ? `<span class="output-count">${outputs.length} نتائج</span>` : '';
   const title = (job.prompt || 'Generation').replace(/\s+/g,' ').slice(0,85);
-  return `<article class="job-card ${compact?'compact-card':''}"><div class="job-preview">${preview}</div><div class="job-info"><strong title="${esc(job.prompt||'')}">${esc(title)}</strong><small>${esc(new Date((job.created_at||Date.now()/1000)*1000).toLocaleString('ar'))}</small><span class="job-status ${esc(job.status)}">${statusLabel(job.status)}</span>${job.error?`<small class="job-error">${esc(job.error).slice(0,130)}</small>`:''}</div></article>`;
+  return `<article class="job-card ${compact?'compact-card':''}"><div class="job-preview ${previewClass}">${preview}${outputCount}</div><div class="job-info"><strong title="${esc(job.prompt||'')}">${esc(title)}</strong><small>${esc(new Date((job.created_at||Date.now()/1000)*1000).toLocaleString('ar'))}</small><span class="job-status ${esc(job.status)}">${statusLabel(job.status)}</span>${job.error?`<small class="job-error">${esc(job.error).slice(0,130)}</small>`:''}</div></article>`;
 }
 function renderRecentJobs() {
   const active = state.jobs.slice(0,6);
@@ -341,7 +348,7 @@ function renderLibrary() {
     content.innerHTML = `<div class="empty-state"><span>▧</span><strong>مكتبتك فارغة حالياً</strong><small>أول صورة أو فيديو تنشئه سيظهر هنا.</small></div>`;
     return;
   }
-  content.innerHTML = completed.map(job => `<article class="library-card">${jobCard(job)}</article>`).join('');
+  content.innerHTML = completed.map(job => `<article class="library-card">${jobCard(job,false,true)}</article>`).join('');
 }
 async function loadLibrary() { await loadRecentJobs(); renderLibrary(); }
 $('#refresh-library').addEventListener('click', loadLibrary);

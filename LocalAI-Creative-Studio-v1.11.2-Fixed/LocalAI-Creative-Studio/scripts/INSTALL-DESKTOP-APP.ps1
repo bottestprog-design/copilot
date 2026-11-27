@@ -132,6 +132,15 @@ function Ensure-PlainDirectory([string]$Path) {
     }
 }
 
+function Assert-PlainFileOrMissing([string]$Path) {
+    if (Test-Path -LiteralPath $Path) {
+        $item = Get-Item -LiteralPath $Path -Force -ErrorAction Stop
+        if ($item.PSIsContainer -or (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0)) {
+            throw "Refusing to read or write a redirected or non-file application data path: $Path"
+        }
+    }
+}
+
 function Get-SafeShortcutPath([string]$Directory, [string]$BaseName, [string]$WScriptPath, [string]$VbsPath, $Shell) {
     $candidate = Join-Path $Directory ($BaseName + '.lnk')
     $entry = Get-Item -LiteralPath $candidate -Force -ErrorAction SilentlyContinue
@@ -705,6 +714,7 @@ try {
     $env:PYTHONUNBUFFERED = '1'
     $requirementsHash = (Get-FileHash -LiteralPath $Requirements -Algorithm SHA256).Hash.ToLowerInvariant()
     $dependencyState = Join-Path $DataRoot 'requirements.sha256'
+    Assert-PlainFileOrMissing $dependencyState
     $priorRequirementsHash = if (Test-Path -LiteralPath $dependencyState -PathType Leaf) { (Get-Content -LiteralPath $dependencyState -Raw).Trim() } else { '' }
     $dependenciesReady = ($priorRequirementsHash -eq $requirementsHash) -and (Test-StudioEnvironment $Python)
 
@@ -746,6 +756,7 @@ try {
             if (-not (Test-StudioEnvironment $Python) -or -not (Test-StudioApplication $Python)) {
                 throw 'The promoted Python environment did not pass its final post-swap validation.'
             }
+            Assert-PlainFileOrMissing $dependencyState
             Set-Content -LiteralPath $dependencyState -Value $requirementsHash -Encoding ASCII
             Write-Host 'The new Python environment passed validation and was activated successfully.' -ForegroundColor Green
             if ($venvBackup) { Write-Host "The previous environment was preserved at: $venvBackup" -ForegroundColor Yellow }
@@ -838,6 +849,7 @@ try {
         "COMFYUI: External local service; not installed or modified"
     )
     $statusFile = Join-Path $DataRoot "DESKTOP-APP-STATUS.txt"
+    Assert-PlainFileOrMissing $statusFile
     Set-Content -LiteralPath $statusFile -Value $statusLines -Encoding UTF8
 
     Write-InstallOwnershipMarker

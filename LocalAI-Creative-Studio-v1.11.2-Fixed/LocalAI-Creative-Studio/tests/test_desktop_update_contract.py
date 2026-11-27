@@ -15,6 +15,22 @@ class DesktopUpdateContractTests(unittest.TestCase):
         cls.launcher = (ROOT / "scripts" / "LAUNCH-DESKTOP.ps1").read_text(encoding="utf-8")
         cls.verifier = (ROOT / "scripts" / "VERIFY-PACKAGE.ps1").read_text(encoding="utf-8")
         cls.data_path = (ROOT / "scripts" / "DATA-PATH.ps1").read_text(encoding="utf-8-sig")
+        cls.checker = (ROOT / "scripts" / "CHECK-STUDIO.ps1").read_text(encoding="utf-8-sig")
+
+    def test_diagnostics_reads_endpoint_that_contains_engine_health(self):
+        self.assertIn("/api/health", self.checker)
+        self.assertNotIn("/api/ready", self.checker)
+
+    def test_update_backup_hashes_are_verified_before_and_after_rollback(self):
+        self.assertIn("$BackupMap[$relative] = $actual", self.updater)
+        self.assertIn("$backupHash -ne $expectedBackupHash", self.updater)
+        self.assertIn("$restoredHash -ne $expectedBackupHash", self.updater)
+        self.assertIn("Port 7865 is still listening", self.updater)
+
+    def test_rollback_restarts_previously_running_studio_without_browser(self):
+        self.assertIn("$StudioWasRunning", self.updater)
+        self.assertIn("-NoBrowser", self.updater)
+        self.assertIn("param([switch]$NoBrowser)", self.launcher)
 
     def test_dedicated_update_file_calls_update_script(self):
         self.assertIn("scripts\\APPLY-UPDATE.ps1", self.update_bat)
@@ -71,7 +87,7 @@ class DesktopUpdateContractTests(unittest.TestCase):
 
     def test_update_has_rollback_for_new_and_replaced_files(self):
         self.assertIn("function Restore-Update", self.updater)
-        self.assertIn("$BackupMap[$relative] = $true", self.updater)
+        self.assertIn("$BackupMap[$relative] = $actual", self.updater)
         self.assertIn("Restore-Update $BackupRoot $BackupMap $CreatedFiles $NewManifest", self.updater)
 
     def test_icon_cache_path_changes_when_icon_binary_changes(self):

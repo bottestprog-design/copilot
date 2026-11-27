@@ -1,4 +1,4 @@
-LOCALAI CREATIVE STUDIO 1.11.2 — QUICK START
+LOCALAI CREATIVE STUDIO 1.11.3 — QUICK START
 
 FIRST INSTALL
 1) Extract the complete ZIP to a normal folder. Do not run it from inside the archive preview.

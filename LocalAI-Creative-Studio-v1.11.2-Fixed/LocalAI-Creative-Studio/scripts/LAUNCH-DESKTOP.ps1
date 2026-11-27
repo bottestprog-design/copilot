@@ -1,4 +1,5 @@
-﻿$ErrorActionPreference = 'Stop'
+﻿param([switch]$NoBrowser)
+$ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 $Root = Split-Path -Parent $PSScriptRoot
 . (Join-Path $PSScriptRoot 'DATA-PATH.ps1')
@@ -115,32 +116,36 @@ try {
         }
     } else { Write-Log 'Studio server is already running.' }
 
-    $browserCandidates = @(
-        (Join-Path $env:ProgramFiles 'Microsoft\Edge\Application\msedge.exe'),
-        (Join-Path ${env:ProgramFiles(x86)} 'Microsoft\Edge\Application\msedge.exe'),
-        (Join-Path $env:LOCALAPPDATA 'Microsoft\Edge\Application\msedge.exe'),
-        (Join-Path $env:ProgramFiles 'Google\Chrome\Application\chrome.exe'),
-        (Join-Path ${env:ProgramFiles(x86)} 'Google\Chrome\Application\chrome.exe'),
-        (Join-Path $env:LOCALAPPDATA 'Google\Chrome\Application\chrome.exe')
-    )
-    $browserCommand = Get-Command 'msedge.exe' -ErrorAction SilentlyContinue | Select-Object -First 1
-    if (-not $browserCommand) { $browserCommand = Get-Command 'chrome.exe' -ErrorAction SilentlyContinue | Select-Object -First 1 }
-    $Browser = if ($browserCommand) { $browserCommand.Source } else { $browserCandidates | Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Leaf) } | Select-Object -First 1 }
-
-    if ($Browser) {
-        Write-Log "Opening app window using $Browser"
-        $appArgs = @(
-            (Quote-Argument "--app=$Url"),
-            (Quote-Argument "--user-data-dir=$BrowserProfile"),
-            '--no-first-run',
-            '--no-default-browser-check',
-            '--disable-translate'
-        ) -join ' '
-        Start-Process -FilePath $Browser -ArgumentList $appArgs -WorkingDirectory $Root | Out-Null
+    if ($NoBrowser) {
+        Write-Log 'Browser launch was skipped by request; the local service is ready.'
     } else {
-        Write-Log 'No Edge/Chrome executable was found; using the default browser as a fallback.'
-        Start-Process -FilePath $Url | Out-Null
+        $browserCandidates = @(
+            (Join-Path $env:ProgramFiles 'Microsoft\Edge\Application\msedge.exe'),
+            (Join-Path ${env:ProgramFiles(x86)} 'Microsoft\Edge\Application\msedge.exe'),
+            (Join-Path $env:LOCALAPPDATA 'Microsoft\Edge\Application\msedge.exe'),
+            (Join-Path $env:ProgramFiles 'Google\Chrome\Application\chrome.exe'),
+            (Join-Path ${env:ProgramFiles(x86)} 'Google\Chrome\Application\chrome.exe'),
+            (Join-Path $env:LOCALAPPDATA 'Google\Chrome\Application\chrome.exe')
+        )
+        $browserCommand = Get-Command 'msedge.exe' -ErrorAction SilentlyContinue | Select-Object -First 1
+        if (-not $browserCommand) { $browserCommand = Get-Command 'chrome.exe' -ErrorAction SilentlyContinue | Select-Object -First 1 }
+        $Browser = if ($browserCommand) { $browserCommand.Source } else { $browserCandidates | Where-Object { $_ -and (Test-Path -LiteralPath $_ -PathType Leaf) } | Select-Object -First 1 }
+    
+        if ($Browser) {
+            Write-Log "Opening app window using $Browser"
+            $appArgs = @(
+                (Quote-Argument "--app=$Url"),
+                (Quote-Argument "--user-data-dir=$BrowserProfile"),
+                '--no-first-run',
+                '--no-default-browser-check',
+                '--disable-translate'
+            ) -join ' '
+            Start-Process -FilePath $Browser -ArgumentList $appArgs -WorkingDirectory $Root | Out-Null
+        } else {
+            Write-Log 'No Edge/Chrome executable was found; using the default browser as a fallback.'
+            Start-Process -FilePath $Url | Out-Null
+        }
+        Write-Log 'Desktop window launch request completed.'
     }
-    Write-Log 'Desktop window launch request completed.'
 }
 catch { Show-Error $_.Exception.Message; exit 1 }
