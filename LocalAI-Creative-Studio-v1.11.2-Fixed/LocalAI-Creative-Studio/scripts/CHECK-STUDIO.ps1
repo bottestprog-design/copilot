@@ -3,9 +3,32 @@
 $Root = Get-VerifiedLocalAIInstallRoot -FallbackRoot (Split-Path -Parent $PSScriptRoot)
 . (Join-Path $PSScriptRoot 'DATA-PATH.ps1')
 $DataRoot = Get-LocalAIDataRoot -RecoverLegacyStatus
+function Ensure-PlainDirectory([string]$Path) {
+    if (Test-Path -LiteralPath $Path) {
+        $item = Get-Item -LiteralPath $Path -Force -ErrorAction Stop
+        if (-not $item.PSIsContainer -or (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0)) {
+            throw "Refusing a redirected or non-directory diagnostic path: $Path"
+        }
+    } else {
+        New-Item -ItemType Directory -Force -Path $Path -ErrorAction Stop | Out-Null
+        $item = Get-Item -LiteralPath $Path -Force -ErrorAction Stop
+        if (-not $item.PSIsContainer -or (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0)) {
+            throw "Created diagnostic path is not a plain directory: $Path"
+        }
+    }
+}
+function Assert-PlainFileOrMissing([string]$Path) {
+    if (Test-Path -LiteralPath $Path) {
+        $item = Get-Item -LiteralPath $Path -Force -ErrorAction Stop
+        if ($item.PSIsContainer -or (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0)) {
+            throw "Refusing a redirected or non-file diagnostic path: $Path"
+        }
+    }
+}
 $ReportDir = Join-Path $DataRoot 'logs'
-New-Item -ItemType Directory -Force -Path $ReportDir | Out-Null
-$Report = Join-Path $ReportDir ('creative-studio-check-' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '.txt')
+Ensure-PlainDirectory $ReportDir
+$Report = Join-Path $ReportDir ('creative-studio-check-' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '-' + [guid]::NewGuid().ToString('N') + '.txt')
+Assert-PlainFileOrMissing $Report
 $lines = [System.Collections.Generic.List[string]]::new()
 function Add-Result([string]$Name, [bool]$Ok, [string]$Details) {
     $label = if ($Ok) { 'OK' } else { 'CHECK' }
@@ -25,7 +48,7 @@ foreach ($item in @(@('Studio website',7865),@('ComfyUI image/video engine',8188
     Add-Result $item[0] $ok "127.0.0.1:$port"
 }
 try {
-    $health = Invoke-RestMethod -Uri 'http://127.0.0.1:7865/api/ready' -TimeoutSec 3
+    $health = Invoke-RestMethod -Uri 'http://127.0.0.1:7865/api/health' -TimeoutSec 3
     Add-Result 'Studio API' $true "version $($health.version)"
     $comfyDetail = if ($health.comfyui.error) { $health.comfyui.error } else { 'responding' }
     $ollamaDetail = if ($health.ollama.error) { $health.ollama.error } else { 'responding' }

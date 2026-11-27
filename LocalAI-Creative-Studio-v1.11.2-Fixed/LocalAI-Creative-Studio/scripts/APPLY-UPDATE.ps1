@@ -228,13 +228,20 @@ function Restore-Update([string]$BackupRoot, [hashtable]$BackupMap, [System.Coll
     Write-UpdateLog 'An update stage failed. Restoring the previous application files...' 'Yellow'
     foreach ($relative in $BackupMap.Keys) {
         try {
+            $expectedBackupHash = [string]$BackupMap[$relative]
+            if ($expectedBackupHash -notmatch '^[0-9a-f]{64}$') { throw "Rollback has no valid recorded backup hash for $relative." }
             $backup = Get-SafeTarget $BackupRoot $relative
             $target = Get-SafeTarget $InstallRoot $relative
-            if (Test-Path -LiteralPath $backup -PathType Leaf) {
-                $directory = [System.IO.Path]::GetDirectoryName($target)
-                New-Item -ItemType Directory -Force -Path $directory | Out-Null
-                Copy-Item -LiteralPath $backup -Destination $target -Force
-            }
+            if (-not (Test-Path -LiteralPath $backup -PathType Leaf)) { throw "Rollback backup is missing for $relative." }
+            $backupItem = Get-Item -LiteralPath $backup -Force -ErrorAction Stop
+            if ($backupItem.PSIsContainer -or (($backupItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0)) { throw "Rollback backup is not a plain file for $relative." }
+            $backupHash = (Get-FileHash -LiteralPath $backup -Algorithm SHA256 -ErrorAction Stop).Hash.ToLowerInvariant()
+            if ($backupHash -ne $expectedBackupHash) { throw "Rollback backup SHA-256 mismatch for $relative; refusing to restore an unverified file." }
+            $directory = [System.IO.Path]::GetDirectoryName($target)
+            New-Item -ItemType Directory -Force -Path $directory | Out-Null
+            Copy-Item -LiteralPath $backup -Destination $target -Force
+            $restoredHash = (Get-FileHash -LiteralPath $target -Algorithm SHA256 -ErrorAction Stop).Hash.ToLowerInvariant()
+            if ($restoredHash -ne $expectedBackupHash) { throw "Restored file SHA-256 mismatch for $relative." }
         } catch { Write-UpdateLog "ROLLBACK WARNING for $relative : $($_.Exception.Message)" 'Red' }
     }
     foreach ($relative in $Created) {
@@ -266,6 +273,19 @@ $BackupMap = @{}
 $CreatedFiles = New-Object 'System.Collections.Generic.List[string]'
 $NewManifest = @{}
 $UpdateStarted = $false
+$StudioWasRunning = $false
+try {
+    $expectedStudioPython = [System.IO.Path]::GetFullPath((Join-Path $InstallRoot '.venv\Scripts\python.exe'))
+    $studioProcesses = @(Get-CimInstance Win32_Process -Filter "name='python.exe' OR name='pythonw.exe'" -ErrorAction SilentlyContinue | Where-Object {
+        if (-not $_.ExecutablePath -or -not $_.CommandLine) { return $false }
+        try {
+            [System.IO.Path]::GetFullPath($_.ExecutablePath) -ieq $expectedStudioPython -and
+            $_.CommandLine -match '(?i)uvicorn\s+studio\.server:app' -and
+            $_.CommandLine -match '(?i)--port\s+7865'
+        } catch { $false }
+    })
+    $StudioWasRunning = ($studioProcesses.Count -gt 0)
+} catch { $StudioWasRunning = $false }
 
 try {
     Write-UpdateLog 'LOCALAI CREATIVE STUDIO - TRANSACTIONAL DESKTOP UPDATE' 'Cyan'
@@ -321,13 +341,6 @@ try {
     Test-ManifestFiles $StageRoot $NewManifest
     Write-UpdateLog ("Staging verified: {0} package files." -f $NewManifest.Count) 'Green'
 
-    Write-UpdateLog 'Stopping only the LocalAI Creative Studio service...' 'Cyan'
-    $stopScript = Join-Path $InstallRoot 'scripts\STOP-STUDIO.ps1'
-    if (Test-Path -LiteralPath $stopScript -PathType Leaf) {
-        & $SystemPowerShell -NoLogo -NoProfile -ExecutionPolicy Bypass -File $stopScript
-        if ($LASTEXITCODE -ne 0) { throw 'Could not safely stop the Studio service. Live application files were not changed.' }
-    }
-
     # Back up every package-owned file that will be replaced or retired.
     # If an unowned file collides with a new package path, stop rather than overwrite it.
     $pathsToProtect = @{}
@@ -343,11 +356,27 @@ try {
         $backup = Get-SafeTarget $BackupRoot $relative
         New-Item -ItemType Directory -Force -Path ([System.IO.Path]::GetDirectoryName($backup)) | Out-Null
         Copy-Item -LiteralPath $target -Destination $backup -Force
-        $BackupMap[$relative] = $true
+        $backupHash = (Get-FileHash -LiteralPath $backup -Algorithm SHA256 -ErrorAction Stop).Hash.ToLowerInvariant()
+        if ($backupHash -ne $actual) { throw "The update backup did not match the original file: $relative. No application files were replaced." }
+        $BackupMap[$relative] = $actual
         if ($oldManifest.ContainsKey($relative) -and $actual -ne $oldManifest[$relative]) {
             Write-UpdateLog "Preserved a backup of a locally modified package file before updating: $relative" 'Yellow'
         }
     }
+
+    Write-UpdateLog 'Stopping only the LocalAI Creative Studio service...' 'Cyan'
+    $stopScript = Join-Path $InstallRoot 'scripts\STOP-STUDIO.ps1'
+    if (Test-Path -LiteralPath $stopScript -PathType Leaf) {
+        & $SystemPowerShell -NoLogo -NoProfile -ExecutionPolicy Bypass -File $stopScript
+        if ($LASTEXITCODE -ne 0) { throw 'Could not safely stop the Studio service. Live application files were not changed.' }
+    }
+    $portReleased = $false
+    for ($attempt = 0; $attempt -lt 20; $attempt++) {
+        $listeners = @(Get-NetTCPConnection -LocalPort 7865 -State Listen -ErrorAction SilentlyContinue)
+        if ($listeners.Count -eq 0) { $portReleased = $true; break }
+        Start-Sleep -Seconds 1
+    }
+    if (-not $portReleased) { throw 'Port 7865 is still listening after the Studio stop request. No live application files were replaced.' }
 
     $UpdateStarted = $true
     Write-UpdateLog 'Applying staged package files. The update can be rolled back if installation checks fail...' 'Cyan'
@@ -419,6 +448,16 @@ catch {
                 if ($LASTEXITCODE -ne 0) { Write-UpdateLog 'WARNING: Desktop integration could not be refreshed after rollback. Run SETUP-AND-START.bat from the last known-good package.' 'Red' }
             }
         } catch { Write-UpdateLog "WARNING: rollback desktop refresh failed: $($_.Exception.Message)" 'Red' }
+    }
+    if ($StudioWasRunning) {
+        try {
+            $recoveryLauncher = Join-Path $InstallRoot 'scripts\LAUNCH-DESKTOP.ps1'
+            if (Test-Path -LiteralPath $recoveryLauncher -PathType Leaf) {
+                Write-UpdateLog 'The Studio was running before the update; restarting the restored application without opening a second browser window...' 'Cyan'
+                & $SystemPowerShell -NoLogo -NoProfile -ExecutionPolicy Bypass -File $recoveryLauncher -NoBrowser
+                if ($LASTEXITCODE -ne 0) { Write-UpdateLog 'WARNING: the restored Studio could not be restarted automatically. Use its existing Desktop shortcut after reviewing the update log.' 'Red' }
+            }
+        } catch { Write-UpdateLog "WARNING: restored Studio restart failed: $($_.Exception.Message)" 'Red' }
     }
     try { Write-UpdateLog "UPDATE FAILED: $message" 'Red' } catch { Write-Host "UPDATE FAILED: $message" -ForegroundColor Red }
     try {
