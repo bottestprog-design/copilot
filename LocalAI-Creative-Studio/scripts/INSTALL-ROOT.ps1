@@ -35,19 +35,36 @@ function Test-LocalAIInstallOwnerMarker {
     try {
         if (-not (Test-LocalAIPlainRoot $Path)) { return $false }
         $root = [System.IO.Path]::GetFullPath($Path).TrimEnd('\')
-        if (-not (Test-LocalAIPlainRelativeFile -Root $root -Relative '.localai-creative-studio-owner.json')) { return $false }
-        $marker = Join-Path $root '.localai-creative-studio-owner.json'
+        $markerRelative = '.localai-creative-studio-owner.json'
+        if (-not (Test-LocalAIPlainRelativeFile -Root $root -Relative $markerRelative)) { return $false }
+        $marker = Join-Path $root $markerRelative
         $record = Get-Content -LiteralPath $marker -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop
         $savedRoot = [System.IO.Path]::GetFullPath([string]$record.install_root).TrimEnd('\')
-        if ($record.product_id -eq 'localai-creative-studio' -and $record.schema_version -eq 1 -and $savedRoot -ieq $root) {
-            foreach ($relative in @('VERSION.txt','Launch-LocalAI-Creative-Studio.vbs','scripts\LAUNCH-DESKTOP.ps1','scripts\STOP-STUDIO.ps1','studio\server.py')) {
+        if ($record.product_id -ne 'localai-creative-studio' -or $record.schema_version -ne 1 -or $savedRoot -ine $root) { return $false }
+
+        # A valid marker is written only after an empty folder is claimed, so it
+        # also lets setup resume after an interrupted first copy. Validate every
+        # existing core path, but do not require all files to exist yet.
+        foreach ($directory in @('scripts','studio')) {
+            $directoryPath = Join-Path $root $directory
+            if (Test-Path -LiteralPath $directoryPath) {
+                $item = Get-Item -LiteralPath $directoryPath -Force -ErrorAction Stop
+                if (-not $item.PSIsContainer -or (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0)) { return $false }
+            }
+        }
+        foreach ($relative in @('VERSION.txt','Launch-LocalAI-Creative-Studio.vbs','scripts\INSTALL-DESKTOP-APP.ps1','scripts\LAUNCH-DESKTOP.ps1','scripts\STOP-STUDIO.ps1','studio\server.py')) {
+            $file = Join-Path $root $relative
+            if (Test-Path -LiteralPath $file) {
                 if (-not (Test-LocalAIPlainRelativeFile -Root $root -Relative $relative)) { return $false }
             }
-            $version = (Get-Content -LiteralPath (Join-Path $root 'VERSION.txt') -Raw -ErrorAction Stop).Trim()
-            $parsedVersion = [version]::MinValue
-            return [version]::TryParse($version, [ref]$parsedVersion)
         }
-        return $false
+        $versionPath = Join-Path $root 'VERSION.txt'
+        if (Test-Path -LiteralPath $versionPath) {
+            $version = (Get-Content -LiteralPath $versionPath -Raw -ErrorAction Stop).Trim()
+            $parsedVersion = [version]::MinValue
+            if (-not [version]::TryParse($version, [ref]$parsedVersion)) { return $false }
+        }
+        return $true
     } catch { return $false }
 }
 
