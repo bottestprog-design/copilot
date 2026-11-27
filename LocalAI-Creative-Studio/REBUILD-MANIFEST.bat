@@ -8,10 +8,10 @@ if exist "%PYTHON%" goto rebuild
 rem Use the verified installed copy when this is a clean source release folder.
 set "PS=%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe"
 if not exist "%PS%" set "PS=powershell.exe"
-set "RESOLVER=%~dp0scripts\INSTALL-ROOT.ps1"
+set "RESOLVER=%~dp0scripts\GET-VERIFIED-INSTALL-ROOT.ps1"
 if not exist "%RESOLVER%" goto no_python
 set "RESOLVED_ROOT="
-for /f "usebackq delims=" %%R in (`"%PS%" -NoLogo -NoProfile -ExecutionPolicy Bypass -Command ". '%RESOLVER%'; $d=Join-Path $env:LOCALAPPDATA 'Programs\LocalAI Creative Studio'; $r=Get-VerifiedLocalAIInstallRoot -FallbackRoot $d; if ((Test-LocalAIInstallOwnerMarker $r) -or (Test-LocalAILegacyInstall $r)) { $r }"`) do set "RESOLVED_ROOT=%%R"
+for /f "usebackq delims=" %%R in (`"%PS%" -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%RESOLVER%"`) do set "RESOLVED_ROOT=%%R"
 if not defined RESOLVED_ROOT goto no_python
 set "PYTHON=%RESOLVED_ROOT%\.venv\Scripts\python.exe"
 if not exist "%PYTHON%" goto no_python
