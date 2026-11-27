@@ -30,11 +30,35 @@ function Test-LocalAIPlainRelativeFile {
     } catch { return $false }
 }
 
+function Test-LocalAIPlainPackageTree {
+    param([Parameter(Mandatory=$true)][string]$Root)
+    try {
+        $pending = New-Object 'System.Collections.Generic.Stack[string]'
+        $pending.Push($Root)
+        while ($pending.Count -gt 0) {
+            $current = $pending.Pop()
+            foreach ($child in (Get-ChildItem -LiteralPath $current -Force -ErrorAction Stop)) {
+                if (($child.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { return $false }
+                if ($child.PSIsContainer) {
+                    # The updater never replaces the private virtual environment.
+                    if ($child.Name -eq '.venv' -or $child.Name -eq '.venv.next' -or
+                        $child.Name.StartsWith('.venv.next.incomplete-', [StringComparison]::OrdinalIgnoreCase) -or
+                        $child.Name.StartsWith('.venv.previous-', [StringComparison]::OrdinalIgnoreCase) -or
+                        $child.Name.StartsWith('.venv.failed-', [StringComparison]::OrdinalIgnoreCase)) { continue }
+                    $pending.Push($child.FullName)
+                }
+            }
+        }
+        return $true
+    } catch { return $false }
+}
+
 function Test-LocalAIInstallOwnerMarker {
     param([Parameter(Mandatory=$true)][string]$Path)
     try {
         if (-not (Test-LocalAIPlainRoot $Path)) { return $false }
         $root = [System.IO.Path]::GetFullPath($Path).TrimEnd('\')
+        if (-not (Test-LocalAIPlainPackageTree -Root $root)) { return $false }
         $markerRelative = '.localai-creative-studio-owner.json'
         if (-not (Test-LocalAIPlainRelativeFile -Root $root -Relative $markerRelative)) { return $false }
         $marker = Join-Path $root $markerRelative
@@ -73,6 +97,7 @@ function Test-LocalAILegacyInstall {
     try {
         if (-not (Test-LocalAIPlainRoot $Path)) { return $false }
         $root = [System.IO.Path]::GetFullPath($Path).TrimEnd('\')
+        if (-not (Test-LocalAIPlainPackageTree -Root $root)) { return $false }
         if (-not (Test-LocalAIPlainRelativeFile -Root $root -Relative 'MANIFEST-SHA256.txt')) { return $false }
         $hashes = @{}
         foreach ($line in (Get-Content -LiteralPath (Join-Path $root 'MANIFEST-SHA256.txt') -ErrorAction Stop)) {
