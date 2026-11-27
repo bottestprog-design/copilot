@@ -1,0 +1,29 @@
+LOCALAI CREATIVE STUDIO 1.11.2 — QUICK START
+
+FIRST INSTALL
+1) Extract the complete ZIP to a normal folder. Do not run it from inside the archive preview.
+2) Double-click SETUP-AND-START.bat.
+3) If no compatible 64-bit CPython 3.11-3.14 runtime is found, setup downloads the official CPython 3.14.10 Windows x64 installer and verifies both SHA-256 and Authenticode publisher before execution.
+4) Setup creates the private Python runtime when needed, builds an isolated .venv, resolves bounded dependency ranges using binary wheels, runs pip check, imports the app, and executes the full shipped regression suite before promoting the environment or creating shortcuts.
+5) After success, open the new LocalAI Creative Studio icon on the Desktop.
+
+INSTALL FOLDER COLLISION / RECOVERY
+If %LOCALAPPDATA%\Programs\LocalAI Creative Studio already exists but cannot be verified, setup does not delete, rename, or write into it. It searches for a verified prior LocalAI install, then selects a free sibling folder such as "LocalAI Creative Studio (Managed)" (or a numbered variant). The owner marker records the selected path so updater, launcher diagnostics, and maintenance tools can rediscover it. Leave the unverified folder untouched until you have inspected it yourself.
+
+DAILY USE
+Double-click the LocalAI Creative Studio Desktop icon. The launcher starts only the local Studio service and opens an Edge/Chrome app window when available.
+
+FUTURE UPDATES
+Extract the complete new release ZIP and double-click APPLY-UPDATE.bat. It verifies and stages the release, stops only the LocalAI Studio process, applies package-owned files transactionally, validates Python dependencies and the full regression suite, then refreshes only the LocalAI shortcut and fingerprinted icon.
+
+OTHER DESKTOP PROGRAMS ARE SAFE
+The installer/updater never clears Desktop or Start Menu folders and never uses robocopy /MIR. If another application owns the default shortcut name, LocalAI creates a numbered alternative. Existing shortcuts and applications are not removed or overwritten.
+
+PYTHON AND WINDOWS
+No preinstalled Python, WinGet, administrator permission, global PATH change, file association or system-wide Python Launcher is required. Internet is needed on first setup when Python or dependencies are not already available.
+
+OLLAMA / QWEN / OPEN WEBUI / COMFYUI
+Existing Ollama, Qwen model files, Open WebUI and ComfyUI data are preserved. ComfyUI must be running at http://127.0.0.1:8188 for image/video generation. Ollama at http://127.0.0.1:11434 is optional for local prompt enhancement. Model weights are not bundled in the ZIP.
+
+VERIFY / DIAGNOSTICS
+VERIFY-PACKAGE.bat checks the SHA-256 manifest. CHECK-STUDIO.bat creates a diagnostic report. RUN-TESTS.bat runs the full Python regression suite after setup. Logs are in the selected CreativeStudioData\logs folder.

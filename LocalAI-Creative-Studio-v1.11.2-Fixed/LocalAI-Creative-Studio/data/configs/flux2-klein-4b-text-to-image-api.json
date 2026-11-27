@@ -1,0 +1,56 @@
+{
+  "name": "FLUX.2 Klein 4B — نص إلى صورة (قالب رسمي)",
+  "task": "image",
+  "model_id": "flux2-klein-4b",
+  "model_name": "FLUX.2 Klein 4B",
+  "source_url": "https://comfy.org/hub/workflows/flux-2-klein-4b-text-to-image-814fd547d86e/",
+  "license": "Apache 2.0",
+  "requirements": [
+    {
+      "folder": "diffusion_models",
+      "file": "flux-2-klein-base-4b.safetensors"
+    },
+    {
+      "folder": "text_encoders",
+      "file": "qwen_3_4b.safetensors"
+    },
+    {
+      "folder": "vae",
+      "file": "flux2-vae.safetensors"
+    }
+  ],
+  "bindings": {
+    "positive": {
+      "node_id": "76",
+      "input": "value"
+    },
+    "negative": {
+      "node_id": "75:67",
+      "input": "text"
+    },
+    "steps": {
+      "node_id": "75:62",
+      "input": "steps"
+    },
+    "cfg": {
+      "node_id": "75:63",
+      "input": "cfg"
+    },
+    "width": {
+      "node_id": "75:68",
+      "input": "value"
+    },
+    "height": {
+      "node_id": "75:69",
+      "input": "value"
+    },
+    "seed": {
+      "node_id": "75:73",
+      "input": "noise_seed"
+    },
+    "batch_size": {
+      "node_id": "75:66",
+      "input": "batch_size"
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "name": "Qwen-Image-2512 — نص إلى صورة (قالب رسمي)",
+  "task": "image",
+  "model_id": "qwen-image-2512",
+  "model_name": "Qwen-Image-2512 20B",
+  "source_url": "https://comfy.org/hub/workflows/qwen-image-2512-7c0c712700e0/",
+  "license": "Apache 2.0",
+  "requirements": [
+    {
+      "folder": "diffusion_models",
+      "file": "qwen_image_2512_fp8_e4m3fn.safetensors"
+    },
+    {
+      "folder": "text_encoders",
+      "file": "qwen_2.5_vl_7b_fp8_scaled.safetensors"
+    },
+    {
+      "folder": "vae",
+      "file": "qwen_image_vae.safetensors"
+    }
+  ],
+  "bindings": {
+    "positive": {
+      "node_id": "238:227",
+      "input": "text"
+    },
+    "negative": {
+      "node_id": "238:228",
+      "input": "text"
+    },
+    "seed": {
+      "node_id": "238:230",
+      "input": "seed"
+    },
+    "steps": {
+      "node_id": "238:224",
+      "input": "value"
+    },
+    "cfg": {
+      "node_id": "238:223",
+      "input": "value"
+    },
+    "width": {
+      "node_id": "238:232",
+      "input": "width"
+    },
+    "height": {
+      "node_id": "238:232",
+      "input": "height"
+    },
+    "batch_size": {
+      "node_id": "238:232",
+      "input": "batch_size"
+    }
+  }
+}
