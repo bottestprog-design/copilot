@@ -296,8 +296,8 @@ class DesktopUpdateContractTests(unittest.TestCase):
     def test_manifest_rebuild_uses_a_prepared_private_python_from_source_or_installed_root(self):
         rebuild = (ROOT / "REBUILD-MANIFEST.bat").read_text(encoding="utf-8")
         self.assertIn(".venv\\Scripts\\python.exe", rebuild)
-        self.assertIn("Programs\\LocalAI Creative Studio", rebuild)
-        self.assertIn("Get-VerifiedLocalAIInstallRoot", rebuild)
+        self.assertIn("GET-VERIFIED-INSTALL-ROOT.ps1", rebuild)
+        self.assertIn('-File "%RESOLVER%"', rebuild)
         self.assertIn('"%PYTHON%" "%~dp0scripts\\build_manifest.py"', rebuild)
         self.assertNotIn("py -3", rebuild)
         self.assertNotIn("python scripts\\build_manifest.py", rebuild)
@@ -475,9 +475,8 @@ class DesktopUpdateContractTests(unittest.TestCase):
 
     def test_run_tests_can_use_installed_environment_when_started_from_release_folder(self):
         run_tests = (ROOT / "RUN-TESTS.bat").read_text(encoding="utf-8")
-        self.assertIn("Programs\\LocalAI Creative Studio", run_tests)
-        self.assertIn("Get-VerifiedLocalAIInstallRoot", run_tests)
-        self.assertIn("Test-LocalAIInstallOwnerMarker", run_tests)
+        self.assertIn("GET-VERIFIED-INSTALL-ROOT.ps1", run_tests)
+        self.assertIn('-File "%RESOLVER%"', run_tests)
         self.assertIn("PROJECT_ROOT", run_tests)
         self.assertIn("unittest discover -s tests -v", run_tests)
         self.assertNotIn("INSTALLED_ROOT", run_tests)
