@@ -280,10 +280,12 @@ class DesktopUpdateContractTests(unittest.TestCase):
         self.assertIn("'.mypy_cache'", self.installer)
         self.assertIn("'.ruff_cache'", self.installer)
         self.assertIn("'node_modules'", self.installer)
+        self.assertIn("'/XJ'", self.installer)
         updater = (ROOT / "scripts" / "APPLY-UPDATE.ps1").read_text(encoding="utf-8-sig")
         self.assertIn("'.mypy_cache'", updater)
         self.assertIn("'.ruff_cache'", updater)
         self.assertIn("'node_modules'", updater)
+        self.assertIn("'/XJ'", updater)
 
     def test_app_runtime_is_promoted_transactionally(self):
         self.assertIn(".venv.next", self.installer)
@@ -294,7 +296,8 @@ class DesktopUpdateContractTests(unittest.TestCase):
     def test_manifest_rebuild_uses_a_prepared_private_python_from_source_or_installed_root(self):
         rebuild = (ROOT / "REBUILD-MANIFEST.bat").read_text(encoding="utf-8")
         self.assertIn(".venv\\Scripts\\python.exe", rebuild)
-        self.assertIn("%LOCALAPPDATA%\\Programs\\LocalAI Creative Studio", rebuild)
+        self.assertIn("GET-VERIFIED-INSTALL-ROOT.ps1", rebuild)
+        self.assertIn('-File "%RESOLVER%"', rebuild)
         self.assertIn('"%PYTHON%" "%~dp0scripts\\build_manifest.py"', rebuild)
         self.assertNotIn("py -3", rebuild)
         self.assertNotIn("python scripts\\build_manifest.py", rebuild)
@@ -316,10 +319,19 @@ class DesktopUpdateContractTests(unittest.TestCase):
         self.assertNotRegex(self.installer, re.compile(r"Remove-Item[^\r\n]*(Desktop|StartMenu|\$Desktop|\$StartMenu)", re.I))
         self.assertNotIn("/MIR", self.installer.upper())
 
-    def test_install_root_collision_with_an_unrelated_program_is_a_hard_stop(self):
-        self.assertIn("cannot be verified as a LocalAI Creative Studio installation", self.installer)
-        self.assertIn("No file or shortcut was changed", self.installer)
-        self.assertIn("Programs\\LocalAI Creative Studio", self.installer)
+    def test_unverified_default_install_folder_is_preserved_and_safe_alternate_is_selected(self):
+        self.assertIn("Get-AvailableLocalAIInstallRoot -DefaultRoot $DefaultInstallRoot", self.installer)
+        self.assertIn("No existing item was changed", self.installer)
+        resolver = (ROOT / "scripts" / "INSTALL-ROOT.ps1").read_text(encoding="utf-8-sig")
+        self.assertIn("LocalAI Creative Studio (Managed)", resolver)
+        self.assertIn("Test-LocalAIInstallOwnerMarker", self.installer)
+        self.assertIn("Test-LocalAILegacyInstall", self.installer)
+
+    def test_direct_updater_avoids_an_unverified_default_directory(self):
+        updater = (ROOT / "scripts" / "APPLY-UPDATE.ps1").read_text(encoding="utf-8-sig")
+        self.assertIn("Get-AvailableLocalAIInstallRoot -DefaultRoot $DefaultInstallRoot", updater)
+        self.assertIn("Test-LocalAIInstallOwnerMarker $sourceCandidate", updater)
+        self.assertIn("Test-LocalAILegacyInstall $sourceCandidate", updater)
 
     def test_preexisting_empty_install_root_is_reused_without_recreating_it(self):
         first_install = self.installer.split("# First install: only write into a new or explicitly owned folder.", 1)[1].split("$copyArgs =", 1)[0]
@@ -463,12 +475,14 @@ class DesktopUpdateContractTests(unittest.TestCase):
         self.assertIn("product_id -eq 'localai-creative-studio'", resolver)
         self.assertIn("schema_version -eq 1", resolver)
         self.assertIn("[IO.FileAttributes]::ReparsePoint", resolver)
+        self.assertIn("Test-LocalAIPlainPackageTree", resolver)
         self.assertIn("Get-VerifiedLocalAIInstallRoot", stop)
         self.assertIn("Get-VerifiedLocalAIInstallRoot", check)
 
     def test_run_tests_can_use_installed_environment_when_started_from_release_folder(self):
         run_tests = (ROOT / "RUN-TESTS.bat").read_text(encoding="utf-8")
-        self.assertIn(r"%LOCALAPPDATA%\Programs\LocalAI Creative Studio", run_tests)
+        self.assertIn("GET-VERIFIED-INSTALL-ROOT.ps1", run_tests)
+        self.assertIn('-File "%RESOLVER%"', run_tests)
         self.assertIn("PROJECT_ROOT", run_tests)
         self.assertIn("unittest discover -s tests -v", run_tests)
         self.assertNotIn("INSTALLED_ROOT", run_tests)

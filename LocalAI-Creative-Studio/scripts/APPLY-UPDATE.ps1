@@ -2,7 +2,7 @@
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 $SourceRoot = Split-Path -Parent $PSScriptRoot
-$InstallRoot = Join-Path $env:LOCALAPPDATA 'Programs\LocalAI Creative Studio'
+$DefaultInstallRoot = Join-Path $env:LOCALAPPDATA 'Programs\LocalAI Creative Studio'
 $InstallParent = Join-Path $env:LOCALAPPDATA 'Programs'
 if (Test-Path -LiteralPath $InstallParent -PathType Container) {
     $installParentItem = Get-Item -LiteralPath $InstallParent -Force
@@ -10,8 +10,21 @@ if (Test-Path -LiteralPath $InstallParent -PathType Container) {
 }
 $SystemPowerShell = Join-Path $env:WINDIR 'System32\WindowsPowerShell\v1.0\powershell.exe'
 . (Join-Path $PSScriptRoot 'DATA-PATH.ps1')
+. (Join-Path $PSScriptRoot 'INSTALL-ROOT.ps1')
 if (-not (Test-Path -LiteralPath $SystemPowerShell -PathType Leaf)) { $SystemPowerShell = 'powershell.exe' }
 
+# Resolve the product's verified installation wherever a prior safe install placed it.
+# An unknown or occupied default folder is never treated as an upgrade target.
+$InstallRoot = Get-VerifiedLocalAIInstallRoot -FallbackRoot $DefaultInstallRoot
+if (-not (Test-LocalAIInstallOwnerMarker $InstallRoot) -and -not (Test-LocalAILegacyInstall $InstallRoot)) {
+    $sourceCandidate = [System.IO.Path]::GetFullPath($SourceRoot).TrimEnd('\')
+    if ((Test-LocalAIInstallOwnerMarker $sourceCandidate) -or (Test-LocalAILegacyInstall $sourceCandidate)) {
+        $InstallRoot = $sourceCandidate
+    } else {
+        # Do not mistake a coincidental launcher file in an unknown folder for an installation.
+        $InstallRoot = Get-AvailableLocalAIInstallRoot -DefaultRoot $DefaultInstallRoot
+    }
+}
 $InstallOwnershipMarker = Join-Path $InstallRoot '.localai-creative-studio-owner.json'
 
 function Ensure-PlainDirectory([string]$Path) {
@@ -298,7 +311,7 @@ try {
     Write-OwnedUpdateFolderMarker $StageRoot 'stage'
     Write-OwnedUpdateFolderMarker $BackupRoot 'backup'
     $stageArgs = @(
-        $SourceRoot, $StageRoot, '/E', '/R:2', '/W:2', '/NFL', '/NDL', '/NJH', '/NJS', '/NP',
+        $SourceRoot, $StageRoot, '/E', '/XJ', '/R:2', '/W:2', '/NFL', '/NDL', '/NJH', '/NJS', '/NP',
         '/XD', '.venv', '.venv.next', '__pycache__', '.pytest_cache', '.mypy_cache', '.ruff_cache', 'node_modules', '.git', '.idea', '.vscode',
         '/XF', '*.sqlite*', '*.db*', '*.log', '*.pyc', '*.pyo', '*.tmp', '*.bak'
     )
