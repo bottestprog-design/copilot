@@ -42,9 +42,9 @@ function Test-LocalAIPlainPackageTree {
                 if ($child.PSIsContainer) {
                     # The updater never replaces the private virtual environment.
                     if ($child.Name -eq '.venv' -or $child.Name -eq '.venv.next' -or
-                        $child.Name.StartsWith('.venv.next.incomplete-', [StringComparison]::OrdinalIgnoreCase) -or
-                        $child.Name.StartsWith('.venv.previous-', [StringComparison]::OrdinalIgnoreCase) -or
-                        $child.Name.StartsWith('.venv.failed-', [StringComparison]::OrdinalIgnoreCase)) { continue }
+                        $child.Name.StartsWith('.venv.next.incomplete-', [System.StringComparison]::OrdinalIgnoreCase) -or
+                        $child.Name.StartsWith('.venv.previous-', [System.StringComparison]::OrdinalIgnoreCase) -or
+                        $child.Name.StartsWith('.venv.failed-', [System.StringComparison]::OrdinalIgnoreCase)) { continue }
                     $pending.Push($child.FullName)
                 }
             }
