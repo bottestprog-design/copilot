@@ -16,6 +16,15 @@ if (-not (Test-Path -LiteralPath $SystemPowerShell -PathType Leaf)) { $SystemPow
 # Resolve the product's verified installation wherever a prior safe install placed it.
 # An unknown or occupied default folder is never treated as an upgrade target.
 $InstallRoot = Get-VerifiedLocalAIInstallRoot -FallbackRoot $DefaultInstallRoot
+if (-not (Test-LocalAIInstallOwnerMarker $InstallRoot) -and -not (Test-LocalAILegacyInstall $InstallRoot)) {
+    $sourceCandidate = [System.IO.Path]::GetFullPath($SourceRoot).TrimEnd('\')
+    if ((Test-LocalAIInstallOwnerMarker $sourceCandidate) -or (Test-LocalAILegacyInstall $sourceCandidate)) {
+        $InstallRoot = $sourceCandidate
+    } else {
+        # Do not mistake a coincidental launcher file in an unknown folder for an installation.
+        $InstallRoot = Get-AvailableLocalAIInstallRoot -DefaultRoot $DefaultInstallRoot
+    }
+}
 $InstallOwnershipMarker = Join-Path $InstallRoot '.localai-creative-studio-owner.json'
 
 function Ensure-PlainDirectory([string]$Path) {
