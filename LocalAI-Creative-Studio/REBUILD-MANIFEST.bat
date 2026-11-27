@@ -18,7 +18,7 @@ if not exist "%PYTHON%" goto no_python
 set "PROJECT_ROOT=%RESOLVED_ROOT%\"
 
 :rebuild
-"%PYTHON%" "%PROJECT_ROOT%scripts\build_manifest.py"
+"%PYTHON%" "%~dp0scripts\build_manifest.py"
 if errorlevel 1 (
   echo Could not rebuild the package manifest.
   pause
