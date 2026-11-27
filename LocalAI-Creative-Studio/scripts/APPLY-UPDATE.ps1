@@ -2,7 +2,7 @@
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 $SourceRoot = Split-Path -Parent $PSScriptRoot
-$InstallRoot = Join-Path $env:LOCALAPPDATA 'Programs\LocalAI Creative Studio'
+$DefaultInstallRoot = Join-Path $env:LOCALAPPDATA 'Programs\LocalAI Creative Studio'
 $InstallParent = Join-Path $env:LOCALAPPDATA 'Programs'
 if (Test-Path -LiteralPath $InstallParent -PathType Container) {
     $installParentItem = Get-Item -LiteralPath $InstallParent -Force
@@ -10,8 +10,12 @@ if (Test-Path -LiteralPath $InstallParent -PathType Container) {
 }
 $SystemPowerShell = Join-Path $env:WINDIR 'System32\WindowsPowerShell\v1.0\powershell.exe'
 . (Join-Path $PSScriptRoot 'DATA-PATH.ps1')
+. (Join-Path $PSScriptRoot 'INSTALL-ROOT.ps1')
 if (-not (Test-Path -LiteralPath $SystemPowerShell -PathType Leaf)) { $SystemPowerShell = 'powershell.exe' }
 
+# Resolve the product's verified installation wherever a prior safe install placed it.
+# An unknown or occupied default folder is never treated as an upgrade target.
+$InstallRoot = Get-VerifiedLocalAIInstallRoot -FallbackRoot $DefaultInstallRoot
 $InstallOwnershipMarker = Join-Path $InstallRoot '.localai-creative-studio-owner.json'
 
 function Ensure-PlainDirectory([string]$Path) {
