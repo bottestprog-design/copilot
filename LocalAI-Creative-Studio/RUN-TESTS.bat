@@ -1,15 +1,23 @@
 @echo off
 setlocal
 set "PROJECT_ROOT=%~dp0"
-if not exist "%PROJECT_ROOT%.venv\Scripts\python.exe" (
-  if exist "%LOCALAPPDATA%\Programs\LocalAI Creative Studio\.venv\Scripts\python.exe" set "PROJECT_ROOT=%LOCALAPPDATA%\Programs\LocalAI Creative Studio\"
-)
-if not exist "%PROJECT_ROOT%.venv\Scripts\python.exe" (
-  echo No prepared Studio Python environment was found.
-  echo Run SETUP-AND-START.bat once, then retry RUN-TESTS.bat.
-  pause
-  exit /b 1
-)
+if exist "%PROJECT_ROOT%.venv\Scripts\python.exe" goto run_tests
+
+rem Resolve the installed copy through the shared owner/manifest verifier.
+set "PS=%WINDIR%\System32\WindowsPowerShell\v1.0\powershell.exe"
+if not exist "%PS%" set "PS=powershell.exe"
+set "RESOLVER=%~dp0scripts\INSTALL-ROOT.ps1"
+if not exist "%RESOLVER%" goto no_python
+for /f "usebackq delims=" %%R in (`"%PS%" -NoLogo -NoProfile -ExecutionPolicy Bypass -Command ". '%RESOLVER%'; $d=Join-Path $env:LOCALAPPDATA 'Programs\LocalAI Creative Studio'; $r=Get-VerifiedLocalAIInstallRoot -FallbackRoot $d; if ((Test-LocalAIInstallOwnerMarker $r) -or (Test-LocalAILegacyInstall $r)) { $r }"`) do set "PROJECT_ROOT=%%R\"
+if exist "%PROJECT_ROOT%.venv\Scripts\python.exe" goto run_tests
+
+:no_python
+echo No verified Studio Python environment was found.
+echo Run SETUP-AND-START.bat once, then retry RUN-TESTS.bat.
+pause
+exit /b 1
+
+:run_tests
 cd /d "%PROJECT_ROOT%"
 title LocalAI Creative Studio - Tests
 "%PROJECT_ROOT%.venv\Scripts\python.exe" -m unittest discover -s tests -v
