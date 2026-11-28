@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a0d14">
+  <meta name="application-name" content="LocalAI Creative Studio">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="/static/manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="512x512" href="/static/icons/localai-creative-studio-512.png">
+  <title>LocalAI Creative Studio</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark"><span></span><span></span><span></span></div>
+        <div><strong>LOCAL<span>AI</span></strong><small>CREATIVE STUDIO</small></div>
+      </div>
+      <div class="workspace-label">مساحة العمل المحلية</div>
+      <nav class="side-nav" aria-label="القائمة الرئيسية">
+        <button class="nav-item active" data-page="studio"><i>✳</i><span>الاستوديو</span><kbd>01</kbd></button>
+        <button class="nav-item" data-page="library"><i>▧</i><span>المكتبة والنتائج</span><kbd>02</kbd></button>
+        <button class="nav-item" data-page="models"><i>◈</i><span>النماذج المحلية</span><kbd>03</kbd></button>
+        <button class="nav-item" data-page="workflows"><i>⌘</i><span>سير العمل</span><kbd>04</kbd></button>
+        <button class="nav-item" data-page="diagnostics"><i>⌁</i><span>فحص النظام</span><kbd>05</kbd></button>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="privacy-card">
+        <div class="privacy-icon">◉</div>
+        <div><strong>معالجة محلية</strong><p>طلباتك وملفاتك تبقى على جهازك. لا توجد خدمة سحابية مدمجة.</p></div>
+        <span class="privacy-dot"></span>
+      </div>
+      <div class="sidebar-footer"><span class="pulse-dot"></span> LOCAL WORKSPACE <span class="version" id="app-version">v__APP_VERSION__</span></div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="breadcrumb"><span>LOCALAI</span><b>/</b><strong id="breadcrumb-title">الاستوديو الإبداعي</strong></div>
+        <div class="top-actions">
+          <div class="service-pill" id="comfy-pill"><span class="status-dot"></span><span>ComfyUI</span><b>...</b></div>
+          <div class="service-pill" id="ollama-pill"><span class="status-dot"></span><span>Ollama</span><b>...</b></div>
+          <button class="icon-button" id="refresh-top" title="تحديث الحالة">↻</button>
+        </div>
+      </header>
+
+      <section class="page active" id="page-studio">
+        <div class="hero-row">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> LOCAL GENERATIVE WORKSPACE</div>
+            <h1>من الفكرة إلى <span>الصورة والمشهد.</span></h1>
+            <p class="hero-copy">مساحة إنتاج إبداعي محلية تجمع نماذج الصور والفيديو، تحسين الأوامر بالذكاء الاصطناعي، والتحكم في سير العمل من مكان واحد.</p>
+          </div>
+          <div class="hero-orbit" aria-hidden="true"><div class="orbit-ring ring-a"></div><div class="orbit-ring ring-b"></div><div class="orbit-core">✳</div><span class="orbit-node node-a"></span><span class="orbit-node node-b"></span><span class="orbit-node node-c"></span></div>
+        </div>
+
+        <div class="studio-layout">
+          <section class="panel creator-panel">
+            <div class="panel-head">
+              <div><div class="section-kicker">CREATE / 01</div><h2>إنشاء محتوى جديد</h2></div>
+              <div class="engine-badge"><span class="status-dot"></span> LOCAL ENGINE</div>
+            </div>
+            <div class="task-switch" role="tablist" aria-label="نوع الإنشاء">
+              <button class="task-tab selected" data-task="image"><span>▧</span><b>صورة</b><small>TEXT / IMAGE → IMAGE</small></button>
+              <button class="task-tab" data-task="video"><span>▶</span><b>فيديو</b><small>TEXT / IMAGE → VIDEO</small></button>
+            </div>
+            <div class="field-block prompt-block">
+              <div class="field-title"><label for="prompt">وصف فكرتك</label><span class="field-hint">اكتب بحرية، وسنساعدك في تحسين الوصف</span></div>
+              <textarea id="prompt" rows="5" placeholder="صف المشهد الذي تتخيله... مثال: سيارة رياضية سوداء على طريق ساحلي وقت الغروب، لقطة سينمائية منخفضة..."></textarea>
+              <div class="prompt-toolbar"><span id="prompt-count">0 / 8000</span><button class="ai-button" id="enhance-prompt"><span>✧</span> تحسين الوصف بالذكاء الاصطناعي</button></div>
+              <div class="enhance-notes" id="enhance-notes" hidden></div>
+            </div>
+
+            <div class="field-block">
+              <div class="field-title"><label for="negative-prompt">الوصف السلبي <span class="optional">اختياري</span></label><span class="field-hint">ما الذي تريد تجنّبه؟</span></div>
+              <textarea id="negative-prompt" rows="2" placeholder="تشوهات، ضبابية، تفاصيل غير مرغوبة..."></textarea>
+            </div>
+
+            <div class="field-block upload-block" id="reference-block">
+              <div class="field-title"><label>الصورة المرجعية <span class="optional">اختياري</span></label><span class="field-hint">لتحريك صورة أو استخدامها كمرجع</span></div>
+              <label class="upload-zone" for="reference-image" id="upload-zone">
+                <input type="file" id="reference-image" accept="image/png,image/jpeg,image/webp">
+                <span class="upload-symbol">＋</span><strong>اسحب الصورة هنا أو اضغط للاختيار</strong><small>PNG · JPG · WEBP — حتى 30MB</small>
+                <div id="reference-preview" class="reference-preview" hidden></div>
+              </label>
+            </div>
+
+            <div class="field-block workflow-select-block">
+              <div class="field-title"><label for="workflow-select">سير العمل المستخدم</label><button class="text-link" data-open-page="workflows">إدارة المسارات ↗</button></div>
+              <select id="workflow-select"><option value="">جارٍ تحميل المسارات...</option></select>
+              <p class="field-help" id="workflow-help">سير العمل هو الذي يحدد نموذج التوليد والعُقد المطلوبة.</p>
+            </div>
+
+            <div class="advanced-head"><div><span class="section-kicker">FINE CONTROL / 02</span><h3>إعدادات التوليد</h3></div><button id="toggle-advanced" class="chevron-button" aria-expanded="true">⌃</button></div>
+            <div class="advanced-grid" id="advanced-grid">
+              <div class="control-field wide-control"><label for="checkpoint">نموذج الصورة / Checkpoint</label><select id="checkpoint"><option value="">اختر نموذجاً مثبتاً في ComfyUI</option></select><small>يظهر هذا الخيار عندما يدعم سير العمل تحميل Checkpoint تقليدياً.</small></div>
+              <div class="control-field"><label for="aspect">نسبة الأبعاد</label><select id="aspect"><option value="1:1">مربع 1:1</option><option value="16:9">أفقي 16:9</option><option value="9:16">عمودي 9:16</option><option value="4:3">كلاسيكي 4:3</option><option value="3:2">تصوير 3:2</option></select></div>
+              <div class="control-field"><label for="resolution">حجم الإخراج</label><select id="resolution"><option value="768">متوازن — 768</option><option value="1024" selected>عالٍ — 1024</option><option value="1280">عالٍ جداً — 1280</option></select></div>
+              <div class="control-field"><label for="steps">خطوات التوليد</label><input type="number" id="steps" min="1" max="150" value="28"></div>
+              <div class="control-field"><label for="cfg">قوة الالتزام بالوصف</label><input type="number" id="cfg" min="0" max="30" step="0.5" value="6"></div>
+              <div class="control-field"><label for="seed">Seed <small>(اتركه فارغاً للعشوائي)</small></label><input type="number" id="seed" min="0" placeholder="Random"></div>
+              <div class="control-field video-only" hidden><label for="frames">عدد الإطارات</label><input type="number" id="frames" min="8" max="241" value="81"></div>
+              <div class="control-field video-only" hidden><label for="fps">معدل الإطارات FPS</label><select id="fps"><option value="16">16 FPS</option><option value="24" selected>24 FPS</option><option value="25">25 FPS</option><option value="30">30 FPS</option></select></div>
+              <div class="control-field"><label for="batch-size">عدد النتائج</label><select id="batch-size"><option value="1" selected>1 نتيجة</option><option value="2">2 نتائج</option><option value="3">3 نتائج</option><option value="4">4 نتائج</option></select></div>
+            </div>
+
+            <div class="generate-row">
+              <div class="generate-note"><span>◈</span><div><strong>توليد على جهازك</strong><small>السرعة تعتمد على بطاقة الرسوميات والنموذج.</small></div></div>
+              <button class="generate-button" id="generate-button"><span class="generate-icon">✦</span><span>ابدأ التوليد</span><kbd>↵</kbd></button>
+            </div>
+            <div class="inline-alert" id="studio-alert" hidden></div>
+          </section>
+
+          <aside class="studio-aside">
+            <div class="panel state-panel">
+              <div class="panel-head compact"><div><div class="section-kicker">SYSTEM STATUS</div><h3>حالة المحركات</h3></div><span class="live-label"><i></i> LIVE</span></div>
+              <div class="engine-row"><div class="engine-icon comfy-icon">C</div><div class="engine-meta"><strong>ComfyUI</strong><small>محرك الصور والفيديو</small></div><span class="state-tag" id="comfy-state">يفحص...</span></div>
+              <div class="engine-row"><div class="engine-icon ollama-icon">O</div><div class="engine-meta"><strong>Ollama</strong><small>فهم وتحسين الأوامر</small></div><span class="state-tag" id="ollama-state">يفحص...</span></div>
+              <div class="state-foot"><span class="status-dot"></span><span id="local-state-text">الاتصال محلي على هذا الجهاز</span></div>
+            </div>
+            <div class="panel quick-panel">
+              <div class="panel-head compact"><div><div class="section-kicker">QUICK ACCESS</div><h3>مسارات سريعة</h3></div></div>
+              <button class="quick-link" data-open-page="models"><span class="quick-icon">◈</span><span><b>اكتشف النماذج</b><small>قارن النماذج والتراخيص والاحتياجات</small></span><i>←</i></button>
+              <button class="quick-link" data-open-page="workflows"><span class="quick-icon">⌘</span><span><b>أضف Workflow</b><small>استورد مسار ComfyUI بصيغة API</small></span><i>←</i></button>
+              <button class="quick-link" data-open-page="diagnostics"><span class="quick-icon">⌁</span><span><b>تشخيص الجهاز</b><small>اعرف ما يعمل وما يحتاج إصلاحاً</small></span><i>←</i></button>
+            </div>
+            <div class="panel tip-panel"><div class="tip-star">✧</div><div><strong>نتيجة أفضل تبدأ بوصف أدق</strong><p>حدد العنصر الرئيسي، ما يفعله، زاوية الكاميرا، الإضاءة، الجو العام، وما يجب أن يبقى ثابتاً في المشهد.</p></div></div>
+          </aside>
+        </div>
+
+        <section class="panel jobs-panel">
+          <div class="panel-head queue-head"><div><div class="section-kicker">GENERATION QUEUE</div><h2>الطابور والنتائج الأخيرة</h2><small id="queue-count" class="queue-count">جارٍ قراءة الطابور...</small></div><div class="queue-actions"><button class="outline-button" id="interrupt-queue">إيقاف الحالية</button><button class="outline-button danger-outline" id="clear-queue">مسح مهامي المنتظرة</button><button class="text-link" data-open-page="library">عرض المكتبة كاملة ↗</button></div></div>
+          <div id="recent-jobs" class="jobs-grid"><div class="empty-state"><span>◌</span><strong>لا توجد عمليات بعد</strong><small>ابدأ أول عملية توليد وستظهر هنا حالتها ونتائجها.</small></div></div>
+        </section>
+      </section>
+
+      <section class="page" id="page-library">
+        <div class="page-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> YOUR LOCAL ASSETS</div><h1>المكتبة <span>والنتائج</span></h1><p>كل ما أنشأته محفوظ محلياً ويظهر هنا.</p></div><button class="outline-button" id="refresh-library">↻ تحديث المكتبة</button></div>
+        <div id="library-content" class="library-grid"><div class="empty-state"><span>▧</span><strong>مكتبتك فارغة حالياً</strong><small>أول صورة أو فيديو تنشئه سيظهر هنا.</small></div></div>
+      </section>
+
+      <section class="page" id="page-models">
+        <div class="page-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> OPEN WEIGHTS / LOCAL INFERENCE</div><h1>النماذج <span>المحلية</span></h1><p>اختيارات موصى بها حسب الجودة والسرعة ومتطلبات الجهاز والترخيص.</p></div><button class="outline-button" id="refresh-models">↻ تحديث</button></div>
+        <div id="hardware-summary" class="hardware-summary"></div>
+        <div class="catalog-head"><div><div class="section-kicker">MODEL CATALOG</div><h2>دليل النماذج</h2></div><div class="catalog-filters"><button class="filter-chip active" data-filter="all">الكل</button><button class="filter-chip" data-filter="image">صور</button><button class="filter-chip" data-filter="video">فيديو</button></div></div>
+        <div class="model-grid" id="model-grid"><div class="empty-state"><span>◈</span><strong>جارٍ قراءة الدليل...</strong></div></div>
+        <div class="notice-block"><span>ⓘ</span><p><b>تذكير بالترخيص:</b> الأوزان المفتوحة لا تعني أن جميع النماذج لها الترخيص نفسه. راجع ترخيص كل نموذج قبل الاستخدام التجاري أو إعادة التوزيع. كما أن تقديرات VRAM تعتمد على الدقة والـ quantization والـ offloading والـ workflow.</p></div>
+      </section>
+
+      <section class="page" id="page-workflows">
+        <div class="page-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> COMFYUI PIPELINES</div><h1>سير <span>العمل</span></h1><p>استورد مسارات ComfyUI بصيغة API واربط مدخلات الوصف والتحكم قبل تشغيلها من الاستوديو.</p></div></div>
+        <div class="workflow-layout">
+          <div class="panel workflow-import-panel"><div class="panel-head"><div><div class="section-kicker">IMPORT WORKFLOW</div><h2>إضافة مسار جديد</h2></div><span class="workflow-symbol">⌘</span></div>
+            <p class="muted-copy">من ComfyUI افتح المسار، فعّل Developer Mode، ثم استخدم <b>Save (API Format)</b>. ارفع ملف JSON الناتج هنا.</p>
+            <label class="workflow-drop" for="workflow-file"><span>＋</span><strong>اختر ملف API Workflow</strong><small>JSON حتى 20MB</small><input id="workflow-file" type="file" accept="application/json,.json"></label>
+            <div class="import-controls"><label>اسم المسار<input id="workflow-name" type="text" placeholder="مثال: Wan 2.2 — Image to Video"></label><label>نوع الإنشاء<select id="workflow-task"><option value="image">توليد صور</option><option value="video">توليد فيديو</option></select></label></div>
+            <button class="primary-button full-width" id="import-workflow">استيراد المسار <span>←</span></button>
+            <div class="inline-alert" id="workflow-alert" hidden></div>
+            <div class="warning-note"><b>تنبيه أمان:</b> استورد مسارات تثق بمصدرها فقط. قد تحتوي مسارات ComfyUI على Custom Nodes تنفّذ كوداً محلياً عند التشغيل، وهذه المنصة لا تستطيع تدقيق كل عقدة خارجية تلقائياً.</div>
+          </div>
+          <div class="panel workflow-list-panel"><div class="panel-head"><div><div class="section-kicker">INSTALLED PIPELINES</div><h2>المسارات المثبتة</h2></div><span id="workflow-count" class="count-badge">0</span></div><div id="workflow-list" class="workflow-list"><div class="empty-state"><span>⌘</span><strong>لا توجد مسارات</strong></div></div></div>
+        </div>
+        <div class="panel mapping-panel" id="mapping-panel" hidden><div class="panel-head"><div><div class="section-kicker">INPUT MAPPING</div><h2 id="mapping-title">ربط المدخلات</h2></div><button class="icon-button" id="close-mapping">×</button></div><p class="muted-copy">اختر أي خانة داخل الـ Workflow تستقبل كل إعداد. لا يمكن تخمين كل عُقد النماذج المعقدة بشكل صحيح، لذلك راجع الربط بنفسك.</p><div id="mapping-fields" class="mapping-grid"></div><div class="mapping-actions"><button class="primary-button" id="save-mapping">حفظ الربط</button><button class="outline-button" id="delete-workflow">حذف المسار</button></div><div class="inline-alert" id="mapping-alert" hidden></div></div>
+        <div class="panel workflow-links"><div><div class="section-kicker">OFFICIAL WORKFLOW SOURCES</div><h2>مسارات رسمية جاهزة</h2><p>افتح القوالب في ComfyUI، نزّل المكونات المطلوبة من مصدرها، ثم صدّر API Workflow لاستيراده هنا.</p></div><div class="source-links"><a href="https://comfyanonymous.github.io/ComfyUI_examples/wan22/" target="_blank" rel="noreferrer">Wan 2.2 Examples ↗</a><a href="https://docs.ltx.io/open-source-model/integration-tools/comfy-ui/" target="_blank" rel="noreferrer">LTX ComfyUI Guide ↗</a><a href="https://comfy.org/hub/workflows/" target="_blank" rel="noreferrer">Comfy Workflow Hub ↗</a></div></div>
+      </section>
+
+      <section class="page" id="page-diagnostics">
+        <div class="page-title-row"><div><div class="eyebrow"><span class="eyebrow-line"></span> SYSTEM INSPECTION</div><h1>فحص <span>النظام</span></h1><p>فحص الاتصالات والموارد المحلية ومجلدات النماذج وسير العمل.</p></div><button class="outline-button" id="run-diagnostic">▶ تشغيل الفحص</button></div>
+        <div class="diagnostic-grid" id="diagnostic-content"><div class="empty-state"><span>⌁</span><strong>جاهز للفحص</strong><small>اضغط تشغيل الفحص لجمع حالة الخدمات والموارد.</small></div></div>
+        <div class="panel connection-settings"><div class="panel-head"><div><div class="section-kicker">LOCAL CONNECTIONS</div><h2>إعدادات الاتصال المحلي</h2><p class="muted-copy">غيّر عناوين الخدمات أو اسم نموذج Qwen عند الحاجة. لا يتم إرسال البيانات إلى خادم خارجي.</p></div><span class="workflow-symbol">⌁</span></div>
+          <div class="import-controls settings-grid">
+            <label>عنوان ComfyUI المحلي<input id="setting-comfy" type="url" placeholder="http://127.0.0.1:8188" dir="ltr"></label>
+            <label>عنوان Ollama المحلي<input id="setting-ollama" type="url" placeholder="http://127.0.0.1:11434" dir="ltr"></label>
+            <label>اسم نموذج Qwen في Ollama<input id="setting-model" type="text" placeholder="local-qwen35:latest" dir="ltr"></label>
+          </div>
+          <div class="mapping-actions"><button class="primary-button" id="save-settings">حفظ الإعدادات</button><span id="settings-state" class="muted-copy"></span></div>
+          <div class="inline-alert" id="settings-alert" hidden></div>
+        </div>
+        <div class="panel diagnostic-report"><div class="panel-head"><div><div class="section-kicker">DIAGNOSTIC REPORT</div><h2>التقرير الفني</h2></div><button class="text-link" id="copy-diagnostic" disabled>نسخ التقرير</button></div><pre id="diagnostic-json">لم يتم إنشاء تقرير بعد.</pre></div>
+      </section>
+
+      <footer class="main-footer"><span>LOCALAI CREATIVE STUDIO</span><span>مصمم للعمل محلياً · لا يرسل الملفات إلى خدمات خارجية</span><span>v__APP_VERSION__</span></footer>
+    </main>
+  </div>
+  <div class="toast-stack" id="toast-stack" aria-live="polite"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
